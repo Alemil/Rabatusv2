@@ -2,12 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/Discount_Main_Layout">
-    <CheckBox
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Test"
+    android:id="@+id/discount_main_view">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Discount codes"
+        android:paddingBottom="@dimen/abc_button_padding_vertical_material"
+        android:textColor="@color/titlecolor"
+        android:textSize="20sp"
         />
+
 
 </LinearLayout>

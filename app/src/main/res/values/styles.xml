@@ -5,4 +5,6 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <color name="titlecolor">#3F51B5</color>
+
 </resources>
