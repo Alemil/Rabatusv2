@@ -1,18 +1,58 @@
 package com.example.alex.rabatusv2;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.view.View.OnClickListener;
 
-
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
+    // Temp:
+    int count = 0;
+    int counts = 0;
+    int count_coupon = 0;
+    int score_count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //tihi
+
+        final Button startButton = (Button) findViewById(R.id.start_button);
+        final Button optionsButton = (Button) findViewById(R.id.options_button);
+        final Button couponButton = (Button) findViewById(R.id.discount_button);
+        final Button highscoreButton = (Button) findViewById(R.id.highscore_button);
+
+        startButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v){
+                startButton.setText("Got pressed: " + ++count);
+            }
+        });
+
+        optionsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                optionsButton.setText("Got pressed: " + ++counts);
+            }
+        });
+
+        couponButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                couponButton.setText("Got pressed: " + ++count_coupon);
+            }
+        });
+
+        highscoreButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                highscoreButton.setText("Got pressed: " + ++score_count);
+            }
+        });
     }
 
    /* @Override

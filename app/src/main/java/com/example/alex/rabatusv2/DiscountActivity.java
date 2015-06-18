@@ -5,6 +5,5 @@ import android.app.Activity;
 /**
  * Created by Mathias Linde on 18-06-2015.
  */
-public class DiscountActivity {
-
+public class DiscountActivity extends Activity {
 }
