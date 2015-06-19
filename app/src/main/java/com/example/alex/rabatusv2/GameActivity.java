@@ -41,7 +41,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     private Sensor mAccelerometer;
     private long mLastUpdate;
     private GestureDetector mGestureDetector;
-    private int gameStarted;
+    private boolean gameStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,14 +97,28 @@ public class GameActivity extends Activity implements SensorEventListener {
 
                     @Override
                     public boolean onSingleTapConfirmed(MotionEvent event) {
-                        if(gameStarted == 0) {
-                            gameStarted = 1;
+                        Log.v("tryRun","Entered click event");
+
+                        if(!gameStarted) {
+                            gameStarted = true;
                             StrikerView strikerView = new StrikerView(getApplicationContext());
                             mFrame.addView(strikerView);
                             strikerView.start();
+                            Log.v("tryRun", "Entered click event 1");
+                            return true;
+
+                        }
+                        if(event.getX() < mDisplayWidth/2) {
+                            StrikerView meh = (StrikerView) mFrame.getChildAt(0);
+                            meh.mPosX += 50;
+                            Log.v("tryRun","Entered click event 2");
                             return true;
                         }
-                        return false;
+                        StrikerView meh = (StrikerView) mFrame.getChildAt(0);
+                        meh.mPosX -= 50;
+                        Log.v("tryRun","Entered click event 3");
+                        return true;
+
                     }
                 });
     }
@@ -129,10 +143,10 @@ public class GameActivity extends Activity implements SensorEventListener {
     public class StrikerView extends View {
 
         private static final int BITMAP_SIZE = 64;
-        private static final int REFRESH_RATE = 1000;
+        private static final int REFRESH_RATE = 40;
         private final Paint mPainter = new Paint();
 
-        private float mPosX, mPosY;
+        private float mPosX, mPosY, bla;
         private Bitmap mScaledBitmap;
         private int mScaledBitmapWidth, mScaledBitmapHeight;
         private ScheduledFuture<?> mMoverFuture;
@@ -146,20 +160,24 @@ public class GameActivity extends Activity implements SensorEventListener {
 
             //Need a different size for different screen sizes, test until at good ratio is found
 
-            mScaledBitmapWidth = mDisplayHeight/10;
-            mScaledBitmapHeight = mDisplayWidth/10;
+            mScaledBitmapWidth = mDisplayWidth/10;
+            mScaledBitmapHeight = mDisplayHeight/10;
 
             mScaledBitmap = Bitmap.createScaledBitmap(mBitmap,mScaledBitmapWidth,
                     mScaledBitmapHeight, false);
 
-            mPosX = 100;
-            mPosY = mDisplayHeight/2-mScaledBitmapWidth/2;
+            mPosX = mDisplayWidth/2-mScaledBitmapWidth/2;
+            mPosY = mDisplayHeight-mScaledBitmapHeight;
 
         }
 
         public void onDraw(Canvas canvas) {
-            Log.v("tryRun","Entered onDraw");
+            Log.v("tryRun", "Entered onDraw");
+            Log.v("tryRun", String.valueOf(mPosX));
             canvas.save();
+            Log.v("tryRun", "" + bla);
+            mPosX += bla;
+            Log.v("tryRun", ""+bla);
 
             canvas.drawBitmap(mScaledBitmap, mPosX, mPosY, mPainter);
 
@@ -178,8 +196,8 @@ public class GameActivity extends Activity implements SensorEventListener {
             mMoverFuture = executor.scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
-                    Log.v("tryRun","Entered run");
-                    changeXYPos();
+                    Log.v("tryRun", "Entered run");
+                    //changeXYPos();
                     postInvalidate();
                 }
 
@@ -188,8 +206,9 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         public void changeXYPos() {
             if(!borderHit()) {
-                mPosY+=10;
+
             }
+            mPosX += 20;
         }
 
         public boolean borderHit() {
@@ -201,7 +220,6 @@ public class GameActivity extends Activity implements SensorEventListener {
                 mPosY = 0;
                 return true;
             }
-            Log.v("tryRun", String.valueOf(mDisplayHeight));
             return false;
         }
 
