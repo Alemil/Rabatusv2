@@ -21,8 +21,8 @@ public class MainActivity extends Activity {
         final Button couponButton = (Button) findViewById(R.id.discount_button);
         final Button highscoreButton = (Button) findViewById(R.id.highscore_button);
 
-        //ImageView mImage = (ImageView) findViewById(R.id.logo_image);
-        //mImage.setImageResource(R.drawable.logo);
+        ImageView mImage = (ImageView) findViewById(R.id.logo_image);
+        mImage.setImageResource(R.drawable.logo_image);
 
         startButton.setOnClickListener(new OnClickListener() {
             @Override
