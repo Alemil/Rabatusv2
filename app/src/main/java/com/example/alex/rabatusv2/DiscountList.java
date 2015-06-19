@@ -16,7 +16,7 @@ import java.util.Random;
 
 /**
  * Created by Mathias Linde on 18-06-2015.
- * Developed by Peter Fischer.
+ * Developed by Peter Fischer
  */
 public class DiscountList extends ListActivity {
     DiscountAdapter mAdapter;
@@ -58,6 +58,8 @@ public class DiscountList extends ListActivity {
 
         // Setting the list adapter.
         setListAdapter(mAdapter);
+
+        // Testing.
 
     }
 }

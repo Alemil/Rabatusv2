@@ -21,7 +21,7 @@ public class DiscountItem extends Activity {
         super.onCreate(savedInstanceState);
 
         // Setting the layout.
-        setContentView(findViewById(R.id.discount_item));
+        setContentView(R.layout.discount_checkbox_item);
 
         // Set listener for the checkbox.
         CheckBox checkBox = (CheckBox) findViewById(R.id.discount_checkbox);
