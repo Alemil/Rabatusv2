@@ -2,6 +2,7 @@ package com.example.alex.rabatusv2;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ public class DiscountList extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.discount_list);
+        mAdapter = new DiscountAdapter(getApplicationContext());
 
         // Inflate the footerView.
         LayoutInflater layoutInflater = getLayoutInflater();
@@ -37,17 +40,16 @@ public class DiscountList extends ListActivity {
         // Adding the footer to the list.
         getListView().addFooterView(footerView);
 
-
-
         // Attaching a listener to the footer.
         footerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Delete selected items on the list.
-                Toast.makeText(getApplicationContext(), "shiit", Toast.LENGTH_SHORT).show();
-                for (DiscountItem discountItem : mAdapter.discountItems) {
-                    if (discountItem.itemChecked) {
+                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
 
+                for (DiscountItem discountItem : mAdapter.getList()) {
+                    if (discountItem.itemChecked) {
+                       mAdapter.getList().remove(discountItem);
 
                     }
                 }
@@ -56,10 +58,25 @@ public class DiscountList extends ListActivity {
             }
         });
 
-        // Setting the list adapter.
         setListAdapter(mAdapter);
 
-        // Testing.
 
     }
+
+    // Only for testing, this is you start an activity for result.
+    /*
+    Intent discountData = new Intent();
+                DiscountItem.packageIntent(discountData);
+                setResult(RESULT_OK, discountData);
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == RESULT_OK) {
+
+            DiscountItem discountItem = new DiscountItem();
+            mAdapter.addItems(discountItem);
+        }
+
+    }*/
 }

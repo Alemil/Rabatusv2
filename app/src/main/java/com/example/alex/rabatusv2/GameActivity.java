@@ -35,7 +35,7 @@ public class GameActivity extends Activity{
         setContentView(R.layout.game_activity);
 
         mFrame = (RelativeLayout) findViewById(R.id.frame);
-        mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.omnom_striker);
+           mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.omnom_striker);
         StrikerView strikerView = new StrikerView(getApplicationContext());
         mFrame.addView(strikerView);
         strikerView.start();

@@ -1,9 +1,14 @@
 package com.example.alex.rabatusv2;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 
@@ -12,27 +17,19 @@ import java.util.Random;
 /**
  * Created by Peter on 18-06-2015.
  */
-public class DiscountItem extends Activity {
+public class DiscountItem extends Fragment {
     String discountCode;
     boolean itemChecked = false;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.discount_checkbox_item, container, false);
+    }
 
-        // Setting the layout.
-        setContentView(R.layout.discount_checkbox_item);
+    public static void packageIntent(Intent intent) {
+        intent.putExtra("store name", "HejmeddigStore");
 
-        // Set listener for the checkbox.
-        CheckBox checkBox = (CheckBox) findViewById(R.id.discount_checkbox);
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(((CheckBox) v).isChecked()) {
-                    itemChecked = true;
-                }
-            }
-        });
     }
 
     private String discountGenerator() {
