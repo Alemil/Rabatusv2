@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -64,8 +65,6 @@ public class DiscountAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        Log.v("dether", "vi er inde i getview");
-
         // Get the current item.
         DiscountItem discountItem = (DiscountItem) getItem(position);
 
@@ -73,6 +72,12 @@ public class DiscountAdapter extends BaseAdapter{
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         RelativeLayout discountItemView = (RelativeLayout) inflater.inflate(R.layout.discount_checkbox_item, null);
 
+        // Set the appropriate changes to the view.
+        TextView storeName = (TextView) discountItemView.findViewById(R.id.discount_name);
+        storeName.setText("Store name: " + discountItem.storeNameGenerator());
+
+        TextView discountCode = (TextView) discountItemView.findViewById(R.id.discount_code);
+        discountCode.setText("Discount code: " + discountItem.discountGenerator());
 
 
         return discountItemView;

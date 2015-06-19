@@ -8,13 +8,22 @@
         android:layout_height="wrap_content"
         android:text="Store name"
         android:id="@+id/discount_name"
-        android:tag="Store"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Discount code"
+        android:id="@+id/discount_code"
+        android:layout_below="@+id/discount_name"
+
         />
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/discount_name"
         android:id="@+id/discount_checkbox"
+        android:layout_alignParentRight="true"
         />
 
 </RelativeLayout>
