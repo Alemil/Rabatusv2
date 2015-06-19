@@ -6,21 +6,15 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:id="@+id/VIEW_PARENT">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:layout_alignTop="@+id/start_button"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="81dp" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start"
         android:id="@+id/start_button"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp" />
+        android:layout_marginTop="42dp"
+        android:layout_alignEnd="@+id/highscore_button"
+        android:layout_alignStart="@+id/highscore_button" />
 
     <Button
         android:layout_width="wrap_content"
@@ -28,7 +22,8 @@
         android:text="Options"
         android:id="@+id/options_button"
         android:layout_below="@+id/start_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignEnd="@+id/start_button"
+        android:layout_alignStart="@+id/start_button" />
 
     <Button
         android:layout_width="wrap_content"
@@ -36,14 +31,22 @@
         android:text="Coupons"
         android:id="@+id/discount_button"
         android:layout_below="@+id/options_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignEnd="@+id/options_button"
+        android:layout_alignStart="@+id/options_button"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="Highscore"
         android:id="@+id/highscore_button"
         android:layout_below="@+id/discount_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="57dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/logo_image"
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>
