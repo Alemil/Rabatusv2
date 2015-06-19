@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -27,32 +28,32 @@ public class OptionsActivity extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.options_activity);
 
+        final LinearLayout bg = (LinearLayout) findViewById(R.id.linearlayout);
+
+        final RadioButton rb_white = (RadioButton) findViewById(R.id.white);
+        final RadioButton rb_blue = (RadioButton) findViewById(R.id.blue);
+        final RadioButton rb_green = (RadioButton) findViewById(R.id.green);
+
+        rb_blue.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bg.setBackgroundColor(0xff0baeff);
+            }
+        });
+
+        rb_green.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bg.setBackgroundColor(0xff20b2aa);
+            }
+        });
+
+        rb_white.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bg.setBackgroundColor(0xffffffff);
+            }
+        });
 
     }
-
-
-    /*
-    public void onClick(View v)
-    {
-        Drawable dr = getRequestedOrientation().
-                getDrawable(R.drawable.button_pressed);
-        dr.setColorFilter(Color.parseColor("#FF0000"),
-                PorterDuff.Mode.SRC_ATOP);
-        switch (v.getId())
-        {
-            case R.id.blue:
-                if(button == null)
-                {
-                    button = (Button) findViewById(v.getId());
-                } else {
-                    button.setBackgroundResource(R.drawable.button_pressed);
-                    button = (Button) findViewById(v.getId());
-                }
-                button.setBackgroundDrawable(dr);
-
-                break;
-        }
-    }
-    */
-
 }
