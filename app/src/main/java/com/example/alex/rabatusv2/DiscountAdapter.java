@@ -37,6 +37,10 @@ public class DiscountAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
+    public void addAll(List<DiscountItem> items) {
+        discountItems.addAll(items);
+    }
+
     public List<DiscountItem> getList() {
         return discountItems;
     }

@@ -17,15 +17,13 @@ import java.util.Random;
 /**
  * Created by Peter on 18-06-2015.
  */
-public class DiscountItem extends Fragment {
+public class DiscountItem  {
     String discountCode;
     boolean itemChecked = false;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.discount_checkbox_item, container, false);
-    }
+  public DiscountItem() {
+
+  }
 
     public static void packageIntent(Intent intent) {
         intent.putExtra("store name", "HejmeddigStore");

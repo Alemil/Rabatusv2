@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.view.View.OnClickListener;
 
 public class MainActivity extends Activity {
@@ -44,7 +43,7 @@ public class MainActivity extends Activity {
         couponButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, DiscountList.class));
+                startActivity(new Intent(MainActivity.this, DiscountListActivity.class));
                 Log.v("mainMenu","DiscountActivity started!");
             }
         });
