@@ -2,5 +2,8 @@
     <string name="app_name">Rabatus</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="no_choice_made_string">No Choice Made</string>
+    <string name="choice_Blue_string">ChoiceBlue</string>
+    <string name="choice_Green_string">ChoiceGreen</string>
 
 </resources>

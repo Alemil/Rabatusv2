@@ -30,6 +30,9 @@
         <activity android:name=".GameActivity" >
         </activity>
 
+        <activity android:name=".OptionsActivity">
+        </activity>
+
     </application>
 
 </manifest>
