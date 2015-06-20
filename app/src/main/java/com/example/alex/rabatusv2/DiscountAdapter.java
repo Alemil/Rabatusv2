@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +36,7 @@ public class DiscountAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
+    // Not used yet
     public void clearItems() {
         discountItems.clear();
         notifyDataSetChanged();
@@ -44,6 +48,21 @@ public class DiscountAdapter extends BaseAdapter{
 
     public List<DiscountItem> getList() {
         return discountItems;
+    }
+
+    public void deleteItems() {
+
+        for (Iterator<DiscountItem> iterator = discountItems.iterator(); iterator.hasNext(); ) {
+            DiscountItem currentItem = iterator.next();
+            if (currentItem.itemChecked) {
+                iterator.remove();
+
+
+            }
+        }
+
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -66,7 +85,7 @@ public class DiscountAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the current item.
-        DiscountItem discountItem = (DiscountItem) getItem(position);
+        final DiscountItem discountItem = (DiscountItem) getItem(position);
 
         // Inflate the item to a view.
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -78,6 +97,13 @@ public class DiscountAdapter extends BaseAdapter{
 
         TextView discountCode = (TextView) discountItemView.findViewById(R.id.discount_code);
         discountCode.setText("Discount code: " + discountItem.discountCode);
+
+        CheckBox checkBox = (CheckBox) discountItemView.findViewById(R.id.discount_checkbox);
+        checkBox.setChecked(discountItem.itemChecked);
+
+        //Set up a listener, to listen for checkbox changes.
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> discountItem.setItemChecked(isChecked));
+
 
 
         return discountItemView;
