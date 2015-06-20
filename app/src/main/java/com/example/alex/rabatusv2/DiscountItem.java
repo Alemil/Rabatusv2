@@ -21,7 +21,13 @@ import java.util.Random;
 public class DiscountItem  {
     boolean itemChecked = false;
 
+    public String storeName;
+    public String discountCode;
+
   public DiscountItem() {
+
+      discountCode = discountGenerator();
+      storeName = storeNameGenerator();
 
   }
 
@@ -34,9 +40,9 @@ public class DiscountItem  {
 
         // Random object used for generating a mock discount code.
         Random r = new Random();
-        String discountCode;
+
         //Creating the discount code.
-        return discountCode = "" + (char) (r.nextInt(26) + 'a') + r.nextInt(100) + r.nextInt(100) + (char) (r.nextInt(26) + 'a')
+       return "" + (char) (r.nextInt(26) + 'a') + r.nextInt(100) + r.nextInt(100) + (char) (r.nextInt(26) + 'a')
                 + (char) (r.nextInt(26) + 'a') + r.nextInt(100) + (char) (r.nextInt(26) + 'a') + r.nextInt(100);
 
 

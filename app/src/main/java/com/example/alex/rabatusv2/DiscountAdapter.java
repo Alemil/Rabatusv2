@@ -74,10 +74,10 @@ public class DiscountAdapter extends BaseAdapter{
 
         // Set the appropriate changes to the view.
         TextView storeName = (TextView) discountItemView.findViewById(R.id.discount_name);
-        storeName.setText("Store name: " + discountItem.storeNameGenerator());
+        storeName.setText("Store name: " + discountItem.storeName);
 
         TextView discountCode = (TextView) discountItemView.findViewById(R.id.discount_code);
-        discountCode.setText("Discount code: " + discountItem.discountGenerator());
+        discountCode.setText("Discount code: " + discountItem.discountCode);
 
 
         return discountItemView;
