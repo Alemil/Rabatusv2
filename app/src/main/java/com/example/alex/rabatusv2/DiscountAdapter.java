@@ -102,7 +102,12 @@ public class DiscountAdapter extends BaseAdapter{
         checkBox.setChecked(discountItem.itemChecked);
 
         //Set up a listener, to listen for checkbox changes.
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> discountItem.setItemChecked(isChecked));
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                discountItem.setItemChecked(isChecked);
+            }
+        });
 
 
 
