@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,7 +30,9 @@ public class HighscoreActivity extends Activity {
     private String newName;
     int[] scoreList = new int[10];
     String[] nameList = new String[10];
-    //SharedPreferences prefs;
+
+    private final String HIGHSCORE_NAMES_KEY = "highscore_names";
+    private final String HIGHSCORE_SCORES_KEY = "highscore_scores";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -38,7 +41,21 @@ public class HighscoreActivity extends Activity {
         setContentView(R.layout.highscore_activity);
         //temp
         Button temp = (Button) findViewById(R.id.temp_button);
-        //prefs = getPreferences(MODE_PRIVATE);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String restoredNames = prefs.getString(HIGHSCORE_NAMES_KEY, null);
+        String restoredScores = prefs.getString(HIGHSCORE_SCORES_KEY,null);
+
+        if(restoredNames != null && restoredScores != null){
+                nameList = restoredNames.split(" ",10);
+                String[] scoreTempList = restoredScores.split(" ",10);
+                for(int i = 0 ; i <10 ; i++){
+                    scoreList[i] = Integer.parseInt(scoreTempList[i]);
+                    updateListView(i,nameList[i],scoreList[i]);
+                }
+        }
+
         //setLists();
 
         temp.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +141,8 @@ public class HighscoreActivity extends Activity {
                     j++;
                 }
             }
-
+            String scoreString="";
+            String nameString ="";
             int tempScore;
             String tempName;
             for(int i = lowestplace ; i < 10 ; i++){
@@ -138,7 +156,21 @@ public class HighscoreActivity extends Activity {
                 name=tempName;
 
                 updateListView(i,nameList[i],scoreList[i]);
+
+                if(i == 0){
+                    scoreString += scoreList[i];
+                    nameString += nameList[i];
+                }else{
+                    scoreString += " " + scoreList[i];
+                    nameString += " " + nameList[i];
+                }
             }
+
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            sharedPreferences.edit().putString(HIGHSCORE_NAMES_KEY, nameString).apply();
+            sharedPreferences.edit().putString(HIGHSCORE_SCORES_KEY, scoreString).apply();
+
         }
     }
 
