@@ -14,11 +14,201 @@
         android:layout_marginTop="20dp"/>
 
     <TableLayout
-        android:layout_width="match_parent"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/score_list">
+        android:id="@+id/score_list"
+        android:stretchColumns="1">
 
+        <!-- first -->
+        <TableRow
+            android:id="@+id/first">
+            <TextView
+                android:text="#1"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/first_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/first_score"
+                android:padding="3dip"/>
+        </TableRow>
 
+        <!-- second -->
+        <TableRow
+            android:id="@+id/sec">
+            <TextView
+                android:text="#2"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/sec_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/sec_score"
+                android:padding="3dip"/>
+
+        </TableRow>
+
+        <!-- third -->
+        <TableRow
+            android:id="@+id/third">
+
+            <TextView
+                android:text="#3"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/third_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/third_score"
+                android:padding="3dip"/>
+
+        </TableRow>
+
+        <!-- fourth -->
+        <TableRow
+            android:id="@+id/fourth">
+
+            <TextView
+                android:text="#4"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/fourth_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/fourth_score"
+                android:padding="3dip"/>
+
+        </TableRow>
+
+        <!-- fifth -->
+        <TableRow
+            android:id="@+id/fifth">
+
+            <TextView
+                android:text="#5"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/fifth_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/fifth_score"
+                android:padding="3dip"/>
+        </TableRow>
+
+        <!-- sixth -->
+        <TableRow
+            android:id="@+id/sixth">
+
+            <TextView
+                android:text="#6"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/sixth_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/sixth_score"
+                android:padding="3dip"/>
+
+        </TableRow>
+
+        <!--seventh -->
+        <TableRow
+            android:id="@+id/seventh">
+            <TextView
+                android:text="#7"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/seven_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/seven_score"
+                android:padding="3dip"/>
+        </TableRow>
+
+        <!-- eight -->
+        <TableRow
+            android:id="@+id/eigth">
+
+            <TextView
+                android:text="#8"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/eight_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/eight_score"
+                android:padding="3dip"/>
+
+        </TableRow>
+
+        <!-- ninth -->
+        <TableRow
+            android:id="@+id/ninth">
+
+            <TextView
+                android:text="#9"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/ninth_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/ninth_score"
+                android:padding="3dip"/>
+        </TableRow>
+
+        <!-- tenth -->
+        <TableRow
+            android:id="@+id/tenth">
+
+            <TextView
+                android:text="#10"
+                android:padding="3dip"/>
+            <TextView
+                android:text=""
+                android:id="@+id/tenth_name"
+                android:padding="3dip"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:text="0"
+                android:id="@+id/tenth_score"
+                android:padding="3dip"/>
+        </TableRow>
     </TableLayout>
+
+    <!-- temp -->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add score"
+        android:id="@+id/temp_button" />
+
 </LinearLayout>
