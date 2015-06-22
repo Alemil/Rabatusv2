@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -56,17 +57,29 @@ public class DiscountListActivity extends ListActivity {
             }.getType();
 
             // Getting the data back into a list.
-            List<DiscountItem> items =  gson.fromJson(restoredData, listType);
+            List<DiscountItem> items = gson.fromJson(restoredData, listType);
 
             // The list is set to the list in the adapter.
             mAdapter.addAll(items);
         }
 
-
+        //testing purpose.
+        LayoutInflater layoutInflater = getLayoutInflater();
+        TextView headerView = (TextView) layoutInflater.inflate(R.layout.footer_view, null);
+        headerView.setText("Add items");
+        getListView().setHeaderDividersEnabled(true);
+        getListView().addHeaderView(headerView);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DiscountItem discountItem = new DiscountItem();
+                mAdapter.addItems(discountItem);
+            }
+        });
 
 
         // Inflate the footerView.
-        LayoutInflater layoutInflater = getLayoutInflater();
+        //  LayoutInflater layoutInflater = getLayoutInflater();
         TextView footerView = (TextView) layoutInflater.inflate(R.layout.footer_view, null);
 
         // Put a divider between the elements in the list and the footer.
@@ -82,17 +95,9 @@ public class DiscountListActivity extends ListActivity {
                 // Delete selected items on the list.
                 Log.v("discountList", "The delete button was pressed. A footerView that is");
 
+                mAdapter.deleteItems();
+
                 Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-
-                DiscountItem discountItem = new DiscountItem();
-                mAdapter.addItems(discountItem);
-
-          /*      for (DiscountItem discountItem : mAdapter.getList()) {
-                    if (discountItem.itemChecked) {
-                       mAdapter.getList().remove(discountItem);
-
-                    }
-                }*/
 
 
             }
@@ -118,8 +123,6 @@ public class DiscountListActivity extends ListActivity {
 
         // The DISCOUNT_PREF_KEY is used to identify the data.
         sharedPreferences.edit().putString(DISCOUNT_PREF_KEY, savedDiscount).apply();
-
-
 
 
     }

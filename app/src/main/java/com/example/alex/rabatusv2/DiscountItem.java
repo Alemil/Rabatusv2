@@ -19,8 +19,7 @@ import java.util.Random;
  * Created by Peter on 18-06-2015.
  */
 public class DiscountItem  {
-    boolean itemChecked = false;
-
+    public boolean itemChecked;
     public String storeName;
     public String discountCode;
 
@@ -28,12 +27,11 @@ public class DiscountItem  {
 
       discountCode = discountGenerator();
       storeName = storeNameGenerator();
-
+      itemChecked = false;
   }
 
-    public static void packageIntent(Intent intent) {
-        intent.putExtra("store name", "HejmeddigStore");
-
+    public void setItemChecked(Boolean setChecked) {
+        itemChecked = setChecked;
     }
 
     public String discountGenerator() {
