@@ -100,7 +100,13 @@ public class DiscountListActivity extends ListActivity {
 
                 mAdapter.deleteItems();
 
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                Toast toast = new Toast(getApplicationContext());
+
+                if(toast != null) {
+                    toast.cancel();
+                }
+                toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+
 
 
             }
