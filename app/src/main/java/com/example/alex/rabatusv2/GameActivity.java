@@ -104,6 +104,14 @@ public class GameActivity extends Activity implements SensorEventListener {
                         dialog.dismiss();
                     }
                 });
+
+                menu.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
                 menu.show();
             }
         });
