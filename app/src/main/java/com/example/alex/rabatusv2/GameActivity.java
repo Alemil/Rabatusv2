@@ -107,8 +107,23 @@ public class GameActivity extends Activity implements SensorEventListener {
                 new GestureDetector.SimpleOnGestureListener() {
 
                     @Override
-                    public boolean onSingleTapConfirmed(MotionEvent event) {
+                    public void onLongPress(MotionEvent event) {
+                        if(gameStarted) {
+                            if (event.getX() < mDisplayWidth / 2) {
+                                StrikerView meh = (StrikerView) mFrame.getChildAt(0);
+                                meh.changeXYPos(2);
+                            } else {
+                                StrikerView meh = (StrikerView) mFrame.getChildAt(0);
+                                meh.changeXYPos(-2);
+                                //meh.mPosX -= 50;
+                                //Log.v("tryRun","Entered click event 3");
+                            }
+                        }
 
+                    }
+
+                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent event) {
 
                         if (!gameStarted) {
                             gameStarted = true;
@@ -119,19 +134,8 @@ public class GameActivity extends Activity implements SensorEventListener {
                             strikerView.start();
 
                             return true;
-
                         }
-                        if (event.getX() < mDisplayWidth / 2) {
-                            StrikerView meh = (StrikerView) mFrame.getChildAt(0);
-                            meh.changeXYPos(50);
-                            return true;
-                        }
-                        StrikerView meh = (StrikerView) mFrame.getChildAt(0);
-                        meh.changeXYPos(-50);
-                        //meh.mPosX -= 50;
-                        //Log.v("tryRun","Entered click event 3");
-                        return true;
-
+                        return false;
                     }
                 });
     }
@@ -203,16 +207,14 @@ public class GameActivity extends Activity implements SensorEventListener {
                 @Override
                 public void run() {
                     //Log.v("tryRun", "Entered run");
-                    //changeXYPos();
+
                     if(collision()==NO_COLLISION) {
                         //Log.v("bla","NO COL");
                         fBV.mPosY += 4;
                     }
                     else if(collision() == STRIKER_COLLISION) {
                         Log.v("bla", "STRIKER COL");
-                        //mFrame.removeView(fBV);
-                        //fBV = new FallingBlockView(getApplicationContext());
-                        //mFrame.addView(fBV);
+
                         mFrame.post(new Runnable() {
                             @Override
                             public void run() {
@@ -235,9 +237,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
                             }
                         });
-                        //mFrame.removeView(fBV);
-                        //fBV = new FallingBlockView(getApplicationContext());
-                        //mFrame.addView(fBV);
+
                     }
                     postInvalidate();
                 }
@@ -278,19 +278,13 @@ public class GameActivity extends Activity implements SensorEventListener {
         public boolean leftCorner() {
             return (fBV.mPosX > mPosX
                     && fBV.mPosX < mPosX + mScaledBitmapWidth
-                    && fBV.mPosY+fBV.mScaledBitmapWidth > mPosY); // -strikerView.mScaledBitmapHeight
+                    && fBV.mPosY+fBV.mScaledBitmapWidth > mPosY);
         }
 
         public boolean rightCorner() {
-           // Log.v("bla","Entered rightCorner");
-            /*Log.v("bla","hue " + ((mPosX+mScaledBitmapWidth > strikerView.mPosX)
-                    && (mPosX+mScaledBitmapWidth < strikerView.mPosX+strikerView.mScaledBitmapWidth)
-                    && (mPosY+mScaledBitmapWidth > strikerView.mPosY))); //-strikerView.mScaledBitmapHeight
-            */
-
             return ((fBV.mPosX+fBV.mScaledBitmapWidth > mPosX)
                     && (fBV.mPosX+fBV.mScaledBitmapWidth < mPosX+mScaledBitmapWidth)
-                    && (fBV.mPosY+fBV.mScaledBitmapWidth > mPosY)); //-strikerView.mScaledBitmapHeight
+                    && (fBV.mPosY+fBV.mScaledBitmapWidth > mPosY));
         }
 
     }
