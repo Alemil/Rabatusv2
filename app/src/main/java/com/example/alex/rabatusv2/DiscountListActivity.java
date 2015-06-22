@@ -69,10 +69,12 @@ public class DiscountListActivity extends ListActivity {
         headerView.setText("Add items");
         getListView().setHeaderDividersEnabled(true);
         getListView().addHeaderView(headerView);
-        headerView.setOnClickListener(v -> {
-
-            DiscountItem discountItem = new DiscountItem();
-            mAdapter.addItems(discountItem);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DiscountItem discountItem = new DiscountItem();
+                mAdapter.addItems(discountItem);
+            }
         });
 
 
@@ -87,15 +89,18 @@ public class DiscountListActivity extends ListActivity {
         getListView().addFooterView(footerView);
 
         // Attaching a listener to the footer.
-        footerView.setOnClickListener(v -> {
-            // Delete selected items on the list.
-            Log.v("discountList", "The delete button was pressed. A footerView that is");
+        footerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Delete selected items on the list.
+                Log.v("discountList", "The delete button was pressed. A footerView that is");
 
-            mAdapter.deleteItems();
+                mAdapter.deleteItems();
 
-            Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
 
 
+            }
         });
 
         setListAdapter(mAdapter);
