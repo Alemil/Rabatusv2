@@ -486,7 +486,6 @@ public class GameActivity extends Activity implements SensorEventListener {
         public boolean onSingleTapConfirmed(MotionEvent event) {
 
             if (!gameStarted) {
-                finishedGame();
                 gameStarted = true;
                 StrikerView strikerView = new StrikerView(getApplicationContext());
                 textView.setText("Score: " + points + "  Lives " + lives);
