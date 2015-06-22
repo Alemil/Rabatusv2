@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +35,20 @@ import java.util.concurrent.TimeUnit;
  * Created by Mathias Linde on 18-06-2015.
  */
 public class GameActivity extends Activity implements SensorEventListener {
+
+    /*<View
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignEnd="@+id/startText"
+            android:id="@+id/goLeftView"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/startText"
+            android:id="@+id/goRightView"/>
+            */
 
     private static final int REFRESH_RATE = 40;
     private static final int STRIKER_COLLISION = 1;
@@ -64,6 +79,9 @@ public class GameActivity extends Activity implements SensorEventListener {
     private boolean singlePress = false;
     private float pressXPos;
     private TextView textView;
+    private View goLeftView;
+    private View goRightView;
+    private StrikerView strikerView;
     private int points = 0;
     private int lives = 3;
     private boolean paused;
@@ -76,6 +94,52 @@ public class GameActivity extends Activity implements SensorEventListener {
         mFrame = (RelativeLayout) findViewById(R.id.frame);
 
         textView = (TextView) mFrame.getChildAt(0);
+
+        /*
+        goLeftView = (View) findViewById(R.id.goLeftView);
+
+        goRightView = (View) findViewById(R.id.goRightView);
+
+        goLeftView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("bl", "sfd");
+                if (!gameStarted) {
+                    gameStarted = true;
+                    strikerView = new StrikerView(getApplicationContext());
+                    textView.setText("Score: " + points + "  Lives " + lives + "                      ||");
+                    mFrame.addView(strikerView);
+                    mFrame.addView(strikerView.fBV);
+                    strikerView.start();
+                }
+                else if (gameStarted) {
+                    isStillDown = true;
+                    singlePress = true;
+                    strikerView.changeXYPos(-60);;
+                }
+            }
+        });
+
+        goRightView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Log.v("bl","blabla");
+                if (!gameStarted) {
+                    gameStarted = true;
+                    strikerView = new StrikerView(getApplicationContext());
+                    textView.setText("Score: " + points + "  Lives " + lives + "                      ||");
+                    mFrame.addView(strikerView);
+                    mFrame.addView(strikerView.fBV);
+                    strikerView.start();
+                }
+
+                 else if(gameStarted) {
+                    isStillDown = true;
+                    singlePress = true;
+                    strikerView.changeXYPos(60);
+                }
+            }
+        });*/
 
         mBitmapStriker = BitmapFactory.decodeResource(getResources(), R.drawable.omnom_striker);
         mBitmapBlock = BitmapFactory.decodeResource(getResources(), R.drawable.logo_image);
@@ -124,9 +188,6 @@ public class GameActivity extends Activity implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_UI);
 
         mLastUpdate = System.currentTimeMillis();
-
-        //setupGestureDetector();
-
     }
 
     @Override
@@ -147,54 +208,10 @@ public class GameActivity extends Activity implements SensorEventListener {
         }
     }
 
-    // Set up GestureDetector
-    /*private void setupGestureDetector() {
+    private void updateText() {
+        textView.setText("Score: " + points + "  Lives " + lives);
+    }
 
-        mGestureDetector = new GestureDetector(this,
-
-                new GestureDetector.SimpleOnGestureListener() {
-
-                    @Override
-                    public void onLongPress(MotionEvent event) {
-                        if(gameStarted) {
-
-                            if(event.getX() < mDisplayWidth / 2) {
-                                StrikerView meh = (StrikerView) mFrame.getChildAt(0);
-                                meh.changeXYPos(50);
-                            } else {
-                                StrikerView meh = (StrikerView) mFrame.getChildAt(0);
-                                meh.changeXYPos(-50);
-                                //meh.mPosX -= 50;
-                                //Log.v("tryRun","Entered click event 3");
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public boolean onSingleTapConfirmed(MotionEvent event) {
-
-                        if (!gameStarted) {
-                            gameStarted = true;
-                            StrikerView strikerView = new StrikerView(getApplicationContext());
-                            mFrame.removeView(findViewById(R.id.startText));
-                            mFrame.addView(strikerView);
-                            mFrame.addView(strikerView.fBV);
-                            strikerView.start();
-
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-    }*/
-
-    /*@Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        return mGestureDetector.onTouchEvent(event);
-
-    }*/
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
@@ -202,10 +219,12 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         int action = MotionEventCompat.getActionMasked(event);
 
+        pressXPos = event.getX();
+
         switch(action) {
             case (MotionEvent.ACTION_DOWN) :
                 Log.d(DEBUG_TAG,"Action was DOWN");
-
+                if(gameStarted) isStillDown = true;
                 return true;
             case (MotionEvent.ACTION_MOVE) :
                 Log.d(DEBUG_TAG,"Action was MOVE");
@@ -282,45 +301,47 @@ public class GameActivity extends Activity implements SensorEventListener {
             // Execute the run() in Worker Thread every REFRESH_RATE
             // milliseconds
             // Save reference to this job in mMoverFuture
-            mMoverFuture = executor.scheduleWithFixedDelay(new Runnable() {
+            executor.scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
                     //Log.v("tryRun", "Entered run");
                     if (!paused) {
                         tryLongPress();
-
-                        if (collision() == NO_COLLISION) {
-                            //Log.v("bla","NO COL");
-                            fBV.mPosY += 4;
-                        } else if (collision() == STRIKER_COLLISION) {
-                            Log.v("bla", "STRIKER COL");
-
-                            mFrame.post(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    mFrame.removeView(fBV);
-                                    fBV = new FallingBlockView(getApplicationContext());
-                                    mFrame.addView(fBV);
-                                    points++;
-
-                                }
-                            });
-                        } else {
-                            mFrame.post(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    mFrame.removeView(fBV);
-                                    fBV = new FallingBlockView(getApplicationContext());
-                                    mFrame.addView(fBV);
-                                    lives--;
-                                }
-                            });
-
-                        }
-                        postInvalidate();
                     }
+                    if (collision() == NO_COLLISION) {
+                        //Log.v("bla","NO COL");
+                        fBV.mPosY += 4;
+                    } else if (collision() == STRIKER_COLLISION) {
+                        Log.v("bla", "STRIKER COL");
+
+                        mFrame.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mFrame.removeView(fBV);
+                                fBV = new FallingBlockView(getApplicationContext());
+                                mFrame.addView(fBV);
+                                points++;
+                                updateText();
+                            }
+                        });
+
+                    } else {
+                        mFrame.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                mFrame.removeView(fBV);
+                                fBV = new FallingBlockView(getApplicationContext());
+                                mFrame.addView(fBV);
+                                lives--;
+                                updateText();
+                            }
+                        });
+
+                    }
+                    postInvalidate();
+
                 }
 
             }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
@@ -335,8 +356,6 @@ public class GameActivity extends Activity implements SensorEventListener {
                 } else {
                     StrikerView meh = (StrikerView) mFrame.getChildAt(2);
                     meh.changeXYPos(50);
-                    //meh.mPosX -= 50;
-                    //Log.v("tryRun","Entered click event 3");
                 }
             }
 
@@ -410,39 +429,9 @@ public class GameActivity extends Activity implements SensorEventListener {
                     mScaledBitmapWidth, false);
 
             mPosX = r.nextInt(mDisplayWidth+1-mScaledBitmapWidth);
-            mPosY = -mScaledBitmapWidth;
+            mPosY = -mScaledBitmapWidth-50;
 
         }
-
-        /*public void start() {
-            // Creates a WorkerThread
-            ScheduledExecutorService executor = Executors
-                    .newScheduledThreadPool(1);
-
-            // Execute the run() in Worker Thread every REFRESH_RATE
-            // milliseconds
-            // Save reference to this job in mMoverFuture
-            mMoverFuture = executor.scheduleWithFixedDelay(new Runnable() {
-                @Override
-                public void run() {
-                    Log.v("bla","RUN");
-                    if(collision()==NO_COLLISION) {
-                        Log.v("bla","NO COL");
-                        mPosY += 4;
-                        postInvalidate();
-                    }
-                    else if(collision() == STRIKER_COLLISION) {
-                        Log.v("bla","STRIKER COL");
-                        stop();
-                    }
-                    else {
-                        stop();
-                    }
-
-                }
-
-            }, 0, REFRESH_RATE+10, TimeUnit.MILLISECONDS);
-        }*/
 
         private void stop() {
             //Log.v("bla","Entered stop");
@@ -482,34 +471,17 @@ public class GameActivity extends Activity implements SensorEventListener {
         private static final String DEBUG_TAG = "Gestures";
 
         @Override
-        public void onLongPress(MotionEvent event) {
-            if(gameStarted) {
-                isStillDown = true;
-                pressXPos = event.getX();
-            }
-
-        }
-
-        @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
 
             if (!gameStarted) {
                 gameStarted = true;
                 StrikerView strikerView = new StrikerView(getApplicationContext());
-                textView.setText("Score: " + points + "  Lives " + lives);
+                textView.setText("Score: " + points + "  Lives " + lives + "                      ||");
                 mFrame.addView(strikerView);
                 mFrame.addView(strikerView.fBV);
                 strikerView.start();
-
-                return true;
             }
-            if(gameStarted) {
-                isStillDown = true;
-                singlePress = true;
-                pressXPos = event.getX();
-                return true;
-            }
-            return false;
+            return true;
         }
 
     }

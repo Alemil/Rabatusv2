@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:weightSum="20"
+    android:orientation="vertical">
 
     <RelativeLayout android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="#FF44BBB4"
-        android:id="@+id/frame">
+        android:background="#6FF123F0"
+        android:id="@+id/frame"
+        android:layout_weight="19">
+
         <TextView
             android:layout_width="wrap_content"
             android:text="Tap the screen to start"
@@ -20,9 +24,11 @@
             android:layout_height="40dp"
             android:text="Pause"
             android:id="@+id/pause_button"
+            android:layout_weight="1"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true" />
-    </RelativeLayout>
 
+    </RelativeLayout>
 
 
 </LinearLayout>
