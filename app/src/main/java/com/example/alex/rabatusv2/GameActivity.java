@@ -6,12 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.ShapeDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -34,6 +35,11 @@ public class GameActivity extends Activity implements SensorEventListener {
     private static final int STRIKER_COLLISION = 1;
     private static final int BOTTOM_COLLISION = 2;
     private static final int NO_COLLISION = 0;
+    private static final String DEBUG_TAG = "yolo";
+
+    private GestureDetectorCompat mDetector;
+
+
 
     // The Main view
     private RelativeLayout mFrame;
@@ -52,6 +58,10 @@ public class GameActivity extends Activity implements SensorEventListener {
     private long mLastUpdate;
     private GestureDetector mGestureDetector;
     private boolean gameStarted = false;
+    private boolean isStillDown = false;
+    private boolean singlePress = false;
+    private float pressXPos;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +70,16 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         mFrame = (RelativeLayout) findViewById(R.id.frame);
 
+        textView = (TextView) mFrame.getChildAt(0);
+
         mBitmapStriker = BitmapFactory.decodeResource(getResources(), R.drawable.omnom_striker);
         mBitmapBlock = BitmapFactory.decodeResource(getResources(), R.drawable.logo_image);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if (null == (mAccelerometer = mSensorManager
                 .getDefaultSensor(Sensor.TYPE_ACCELEROMETER))) finish();
+
+        mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
     }
 
@@ -77,7 +91,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         mLastUpdate = System.currentTimeMillis();
 
-        setupGestureDetector();
+        //setupGestureDetector();
 
     }
 
@@ -100,7 +114,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     }
 
     // Set up GestureDetector
-    private void setupGestureDetector() {
+    /*private void setupGestureDetector() {
 
         mGestureDetector = new GestureDetector(this,
 
@@ -109,12 +123,13 @@ public class GameActivity extends Activity implements SensorEventListener {
                     @Override
                     public void onLongPress(MotionEvent event) {
                         if(gameStarted) {
-                            if (event.getX() < mDisplayWidth / 2) {
+
+                            if(event.getX() < mDisplayWidth / 2) {
                                 StrikerView meh = (StrikerView) mFrame.getChildAt(0);
-                                meh.changeXYPos(3);
+                                meh.changeXYPos(50);
                             } else {
                                 StrikerView meh = (StrikerView) mFrame.getChildAt(0);
-                                meh.changeXYPos(-2);
+                                meh.changeXYPos(-50);
                                 //meh.mPosX -= 50;
                                 //Log.v("tryRun","Entered click event 3");
                             }
@@ -138,13 +153,43 @@ public class GameActivity extends Activity implements SensorEventListener {
                         return false;
                     }
                 });
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean onTouchEvent(MotionEvent event) {
 
         return mGestureDetector.onTouchEvent(event);
 
+    }*/
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        this.mDetector.onTouchEvent(event);
+
+        int action = MotionEventCompat.getActionMasked(event);
+
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+                Log.d(DEBUG_TAG,"Action was DOWN");
+
+                return true;
+            case (MotionEvent.ACTION_MOVE) :
+                Log.d(DEBUG_TAG,"Action was MOVE");
+                return true;
+            case (MotionEvent.ACTION_UP) :
+                Log.d(DEBUG_TAG,"Action was UP");
+                isStillDown = false;
+                return true;
+            case (MotionEvent.ACTION_CANCEL) :
+                Log.d(DEBUG_TAG,"Action was CANCEL");
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE) :
+                Log.d(DEBUG_TAG,"Movement occurred outside bounds " +
+                        "of current screen element");
+                return true;
+            default :
+                return super.onTouchEvent(event);
+        }
     }
 
     @Override
@@ -207,6 +252,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                 @Override
                 public void run() {
                     //Log.v("tryRun", "Entered run");
+                    tryLongPress();
 
                     if(collision()==NO_COLLISION) {
                         //Log.v("bla","NO COL");
@@ -243,6 +289,26 @@ public class GameActivity extends Activity implements SensorEventListener {
                 }
 
             }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
+        }
+
+        public void tryLongPress() {
+            if(isStillDown) {
+                if (pressXPos < mDisplayWidth / 2) {
+                    StrikerView meh = (StrikerView) mFrame.getChildAt(1);
+                    meh.changeXYPos(-50);
+                } else {
+                    StrikerView meh = (StrikerView) mFrame.getChildAt(1);
+                    meh.changeXYPos(50);
+                    //meh.mPosX -= 50;
+                    //Log.v("tryRun","Entered click event 3");
+                }
+            }
+
+            if(singlePress) {
+                isStillDown = false;
+                singlePress = false;
+            }
+
         }
 
         public void changeXYPos(int bla) {
@@ -373,6 +439,41 @@ public class GameActivity extends Activity implements SensorEventListener {
             canvas.restore();
         }
 
+    }
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final String DEBUG_TAG = "Gestures";
+
+        @Override
+        public void onLongPress(MotionEvent event) {
+            if(gameStarted) {
+                isStillDown = true;
+                pressXPos = event.getX();
+            }
+
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent event) {
+
+            if (!gameStarted) {
+                gameStarted = true;
+                StrikerView strikerView = new StrikerView(getApplicationContext());
+                textView.setText("Score:");
+                mFrame.addView(strikerView);
+                mFrame.addView(strikerView.fBV);
+                strikerView.start();
+
+                return true;
+            }
+            if(gameStarted) {
+                isStillDown = true;
+                singlePress = true;
+                pressXPos = event.getX();
+                return true;
+            }
+            return false;
+        }
 
     }
 
