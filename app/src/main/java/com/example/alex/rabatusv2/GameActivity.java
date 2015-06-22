@@ -1,9 +1,7 @@
 package com.example.alex.rabatusv2;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -62,7 +60,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     private boolean singlePress = false;
     private float pressXPos;
     private TextView textView;
-    private boolean paused;
     private int points = 0;
     private int lives = 3;
 
@@ -255,30 +252,31 @@ public class GameActivity extends Activity implements SensorEventListener {
                 @Override
                 public void run() {
                     //Log.v("tryRun", "Entered run");
-                    if(!paused) {
-                        tryLongPress();
+                    tryLongPress();
 
-                        if (collision() == NO_COLLISION) {
-                            //Log.v("bla","NO COL");
-                            fBV.mPosY += 4;
-                        } else if (collision() == STRIKER_COLLISION) {
-                            Log.v("bla", "STRIKER COL");
+                    if(collision()==NO_COLLISION) {
+                        //Log.v("bla","NO COL");
+                        fBV.mPosY += 4;
+                    }
+                    else if(collision() == STRIKER_COLLISION) {
+                        Log.v("bla", "STRIKER COL");
 
-                            mFrame.post(new Runnable() {
-                                @Override
-                                public void run() {
+                        mFrame.post(new Runnable() {
+                            @Override
+                            public void run() {
 
                                 mFrame.removeView(fBV);
                                 fBV = new FallingBlockView(getApplicationContext());
                                 mFrame.addView(fBV);
                                 points++;
 
-                                }
-                            });
-                        } else {
-                            mFrame.post(new Runnable() {
-                                @Override
-                                public void run() {
+                            }
+                        });
+                    }
+                    else {
+                        mFrame.post(new Runnable() {
+                            @Override
+                            public void run() {
 
                                 mFrame.removeView(fBV);
                                 fBV = new FallingBlockView(getApplicationContext());
@@ -287,9 +285,8 @@ public class GameActivity extends Activity implements SensorEventListener {
                             }
                         });
 
-                        }
-                        postInvalidate();
                     }
+                    postInvalidate();
                 }
 
             }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
@@ -298,10 +295,10 @@ public class GameActivity extends Activity implements SensorEventListener {
         public void tryLongPress() {
             if(isStillDown) {
                 if (pressXPos < mDisplayWidth / 2) {
-                    StrikerView meh = (StrikerView) mFrame.getChildAt(1);
+                    StrikerView meh = (StrikerView) mFrame.getChildAt(2);
                     meh.changeXYPos(-50);
                 } else {
-                    StrikerView meh = (StrikerView) mFrame.getChildAt(1);
+                    StrikerView meh = (StrikerView) mFrame.getChildAt(2);
                     meh.changeXYPos(50);
                     //meh.mPosX -= 50;
                     //Log.v("tryRun","Entered click event 3");
