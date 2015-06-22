@@ -1,5 +1,6 @@
 package com.example.alex.rabatusv2;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -41,7 +44,6 @@ public class DiscountListActivity extends ListActivity {
         setContentView(R.layout.discount_list);
         mAdapter = new DiscountAdapter(getApplicationContext());
 
-
         // Get the saved DiscountItems
         Gson gson = new Gson();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -63,20 +65,17 @@ public class DiscountListActivity extends ListActivity {
             mAdapter.addAll(items);
         }
 
-        //testing purpose.
-        LayoutInflater layoutInflater = getLayoutInflater();
-        TextView headerView = (TextView) layoutInflater.inflate(R.layout.footer_view, null);
-        headerView.setText("Add items");
-        getListView().setHeaderDividersEnabled(true);
-        getListView().addHeaderView(headerView);
-        headerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        Intent intent = this.getIntent();
+
+        if (intent.getExtras() != null && intent.getExtras().get("SenderID").equals("From_GameActivity")) {
+
                 DiscountItem discountItem = new DiscountItem();
                 mAdapter.addItems(discountItem);
-            }
-        });
 
+        }
+
+        //testing purpose.
+        LayoutInflater layoutInflater = getLayoutInflater();
 
         // Inflate the footerView.
         //  LayoutInflater layoutInflater = getLayoutInflater();
@@ -97,7 +96,13 @@ public class DiscountListActivity extends ListActivity {
 
                 mAdapter.deleteItems();
 
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                Toast toast = new Toast(getApplicationContext());
+
+                if(toast != null) {
+                    toast.cancel();
+                }
+                toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+
 
 
             }
@@ -107,6 +112,7 @@ public class DiscountListActivity extends ListActivity {
 
 
     }
+
 
     @Override
     protected void onPause() {
@@ -126,4 +132,6 @@ public class DiscountListActivity extends ListActivity {
 
 
     }
+
+
 }
