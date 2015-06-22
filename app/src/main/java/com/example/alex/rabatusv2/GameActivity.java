@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -485,6 +486,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         public boolean onSingleTapConfirmed(MotionEvent event) {
 
             if (!gameStarted) {
+                finishedGame();
                 gameStarted = true;
                 StrikerView strikerView = new StrikerView(getApplicationContext());
                 textView.setText("Score: " + points + "  Lives " + lives);
@@ -503,6 +505,25 @@ public class GameActivity extends Activity implements SensorEventListener {
             return false;
         }
 
+    }
+
+    private void finishedGame() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Congratulations! You've been awarded with a discount code! \n Please press continue to acquire it");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent discountIntent = new Intent(GameActivity.this, DiscountListActivity.class);
+
+                discountIntent.putExtra("SenderID", "From_GameActivity");
+                finish();
+                startActivity(discountIntent);
+
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
 
