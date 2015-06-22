@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <RelativeLayout android:layout_width="fill_parent"
+    <RelativeLayout android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:background="#FF44BBB4"
         android:id="@+id/frame">
@@ -14,6 +14,13 @@
             android:textColor="#000000"
             android:textAlignment="4"
             android:id="@+id/startText"/>
+
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="Pause"
+            android:id="@+id/pause_button"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
 

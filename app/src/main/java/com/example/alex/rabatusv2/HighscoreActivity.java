@@ -65,8 +65,13 @@ public class HighscoreActivity extends Activity {
             nameList = gson.fromJson(restoredNames,stringType);
             scoreList = gson.fromJson(restoredScores,intType);
 
+        }else{
+            for(int i = 0;i<10;i++){
+                nameList.add(" ");
+                scoreList.add(0);
+            }
         }
-
+            Log.v("highscore","" +nameList.size());
         for(int i = 0 ; i<10;i++){
             updateListView(i,nameList.get(i),scoreList.get(i));
         }
