@@ -44,17 +44,6 @@ public class DiscountListActivity extends ListActivity {
         setContentView(R.layout.discount_list);
         mAdapter = new DiscountAdapter(getApplicationContext());
 
-        Intent intent = getIntent();
-
-        if (intent != null) {
-            String id = intent.getExtras().getString("SenderID");
-
-            if(id.equals("From_GameActivity")) {
-                DiscountItem discountItem = new DiscountItem();
-                mAdapter.addItems(discountItem);
-            }
-        }
-
         // Get the saved DiscountItems
         Gson gson = new Gson();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -74,6 +63,15 @@ public class DiscountListActivity extends ListActivity {
 
             // The list is set to the list in the adapter.
             mAdapter.addAll(items);
+        }
+
+        Intent intent = this.getIntent();
+
+        if (intent.getExtras() != null && intent.getExtras().get("SenderID").equals("From_GameActivity")) {
+
+                DiscountItem discountItem = new DiscountItem();
+                mAdapter.addItems(discountItem);
+
         }
 
         //testing purpose.
