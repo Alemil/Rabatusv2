@@ -36,6 +36,7 @@ public class DiscountListActivity extends ListActivity {
     private static final String DISCOUNT_PREF_KEY = "discount";
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
