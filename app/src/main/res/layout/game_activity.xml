@@ -7,6 +7,15 @@
         android:layout_height="fill_parent"
         android:background="#FF44BBB4"
         android:id="@+id/frame">
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Tap the screen to start"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textAlignment="4"
+            android:id="@+id/startText"/>
     </RelativeLayout>
+
+
 
 </LinearLayout>
