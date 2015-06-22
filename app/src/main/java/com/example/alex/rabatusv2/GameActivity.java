@@ -39,8 +39,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
     private GestureDetectorCompat mDetector;
 
-
-
     // The Main view
     private RelativeLayout mFrame;
 
@@ -62,6 +60,8 @@ public class GameActivity extends Activity implements SensorEventListener {
     private boolean singlePress = false;
     private float pressXPos;
     private TextView textView;
+    private int points = 0;
+    private int lives = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +268,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                                 mFrame.removeView(fBV);
                                 fBV = new FallingBlockView(getApplicationContext());
                                 mFrame.addView(fBV);
+                                points++;
 
                             }
                         });
@@ -280,7 +281,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                                 mFrame.removeView(fBV);
                                 fBV = new FallingBlockView(getApplicationContext());
                                 mFrame.addView(fBV);
-
+                                lives--;
                             }
                         });
 
@@ -459,7 +460,7 @@ public class GameActivity extends Activity implements SensorEventListener {
             if (!gameStarted) {
                 gameStarted = true;
                 StrikerView strikerView = new StrikerView(getApplicationContext());
-                textView.setText("Score:");
+                textView.setText("Score: " + points + "  Lives " + lives);
                 mFrame.addView(strikerView);
                 mFrame.addView(strikerView.fBV);
                 strikerView.start();
