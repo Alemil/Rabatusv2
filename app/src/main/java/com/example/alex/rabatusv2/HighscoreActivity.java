@@ -17,8 +17,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -29,8 +35,8 @@ public class HighscoreActivity extends Activity {
     //temp
     final Random r = new Random();
     private String newName;
-    int[] scoreList = new int[10];
-    String[] nameList = new String[10];
+    ArrayList<Integer> scoreList = new ArrayList<>();
+    ArrayList<String> nameList = new ArrayList<>();
 
     private final String HIGHSCORE_NAMES_KEY = "HighscoreNames";
     private final String HIGHSCORE_SCORES_KEY = "HighscoreScores";
@@ -44,12 +50,30 @@ public class HighscoreActivity extends Activity {
         Button temp = (Button) findViewById(R.id.temp_button);
         Button tempReset = (Button) findViewById(R.id.temp_reset);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String restoredNames = prefs.getString(HIGHSCORE_NAMES_KEY, null);
-        String restoredScores = prefs.getString(HIGHSCORE_SCORES_KEY,null);
+        Gson gson = new Gson();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String restoredNames = sharedPreferences.getString(HIGHSCORE_NAMES_KEY,null);
+        String restoredScores = sharedPreferences.getString(HIGHSCORE_SCORES_KEY,null);
 
         if(restoredNames != null && restoredScores != null){
+            Type intType = new TypeToken<List<Integer>>(){
+            }.getType();
+
+            Type stringType = new TypeToken<List<String>>(){
+            }.getType();
+
+            nameList = gson.fromJson(restoredNames,stringType);
+            scoreList = gson.fromJson(restoredScores,intType);
+
+        }
+
+        for(int i = 0 ; i<10;i++){
+            updateListView(i,nameList.get(i),scoreList.get(i));
+        }
+
+        /*
+        if(restoredNames != null && restoredScores != null){
+                Log.v("highscore","" + nameList.length);
                 nameList = restoredNames.split("!",10);
                 String[] scoreTempList = restoredScores.split("!",10);
                 for(int i = 0 ; i < scoreTempList.length ; i++){
@@ -61,21 +85,22 @@ public class HighscoreActivity extends Activity {
                     updateListView(i,nameList[i],scoreList[i]);
                 }
         }
-
-        tempReset.setOnClickListener(new View.OnClickListener(){
+        */
+        tempReset.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                Log.v("highscore","Everything worked untill now1");
-                for(int i = 0; i < 10 ; i++){
-                    nameList[i] = " ";
-                    scoreList[i] = 0;
+                Log.v("highscore", " " + nameList.size());
+                for (int i = 0; i < 10; i++) {
+                    nameList.set(i," ");
+                    scoreList.set(i,0);
 
 
-                    updateListView(i,nameList[i],scoreList[i]);
-                    prefs.edit().putString(HIGHSCORE_SCORES_KEY, null);
-                    prefs.edit().putString(HIGHSCORE_NAMES_KEY,null);
+                    updateListView(i, nameList.get(i), scoreList.get(i));
+
+                    //prefs.edit().putString(HIGHSCORE_SCORES_KEY, null);
+                    //prefs.edit().putString(HIGHSCORE_NAMES_KEY,null);
                 }
             }
         });
@@ -87,6 +112,22 @@ public class HighscoreActivity extends Activity {
 
             }
         });
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        Gson gson = new Gson();
+
+        String savedNames = gson.toJson(nameList);
+        String savedScores = gson.toJson(scoreList);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        sharedPreferences.edit().putString(HIGHSCORE_NAMES_KEY,savedNames).apply();
+        sharedPreferences.edit().putString(HIGHSCORE_SCORES_KEY,savedScores).apply();
+
     }
 
     public void makePopup(final int score){
@@ -125,45 +166,45 @@ public class HighscoreActivity extends Activity {
 
     public void updateList(String name, int score){
 
-        if(score >= scoreList[9] ){
+        if(score >= scoreList.get(9) ){
             int lowestplace = 9;
 
             int j = 0;
             while(j <= 9) {
-                if (score >= scoreList[j]) {
+                if (score >= scoreList.get(j)) {
                     lowestplace = j;
                     break;
                 } else {
                     j++;
                 }
             }
-            String scoreString=""+scoreList[0];
-            String nameString =nameList[0];
+            //String scoreString="!"+scoreList[0];
+            //String nameString ="!"+nameList[0];
             int tempScore;
             String tempName;
             for(int i = lowestplace ; i < 10 ; i++){
-                tempScore = scoreList[i];
-                tempName = nameList[i];
+                tempScore = scoreList.get(i);
+                tempName = nameList.get(i);
 
-                scoreList[i] = score;
-                nameList[i] = name;
+                scoreList.set(i,score);
+                nameList.set(i,name);
 
                 score=tempScore;
                 name=tempName;
 
-                updateListView(i,nameList[i],scoreList[i]);
-
+                updateListView(i,nameList.get(i),scoreList.get(i));
+/*
                 if(i > 0 ){
                     scoreString += "!" + scoreList[i];
                     nameString += "!" + nameList[i];
-                }
+                }*/
             }
 
-            Log.v("highscore","Everything worked untill now2");
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            //Log.v("highscore","Everything worked untill now2");
+            //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            sharedPreferences.edit().putString(HIGHSCORE_NAMES_KEY, nameString).apply();
-            sharedPreferences.edit().putString(HIGHSCORE_SCORES_KEY, scoreString).apply();
+            //sharedPreferences.edit().putString(HIGHSCORE_NAMES_KEY, nameString).apply();
+            //sharedPreferences.edit().putString(HIGHSCORE_SCORES_KEY, scoreString).apply();
 
         }
     }
