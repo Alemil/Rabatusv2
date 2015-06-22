@@ -69,7 +69,7 @@ public class OptionsActivity extends MainActivity {
             }
         });
 
-        // Changes the background color to green when the radiobutton is pressed.
+        // Changes the background color to green when the radiobutton is pressed
         rb_green.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
