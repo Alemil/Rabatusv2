@@ -111,7 +111,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                         if(gameStarted) {
                             if (event.getX() < mDisplayWidth / 2) {
                                 StrikerView meh = (StrikerView) mFrame.getChildAt(0);
-                                meh.changeXYPos(2);
+                                meh.changeXYPos(3);
                             } else {
                                 StrikerView meh = (StrikerView) mFrame.getChildAt(0);
                                 meh.changeXYPos(-2);
