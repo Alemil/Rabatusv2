@@ -1,7 +1,9 @@
 package com.example.alex.rabatusv2;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -62,6 +65,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     private TextView textView;
     private int points = 0;
     private int lives = 3;
+    private boolean paused;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,27 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
+        Button pauseButton = (Button) findViewById(R.id.pause_button);
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                paused = true;
+                AlertDialog.Builder menu = new AlertDialog.Builder(GameActivity.this);
+                menu.setTitle("Paused Menu");
+                menu.setCancelable(false);
+
+                menu.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        paused = false;
+
+                        dialog.dismiss();
+                    }
+                });
+                menu.show();
+            }
+        });
     }
 
     @Override
@@ -252,41 +277,41 @@ public class GameActivity extends Activity implements SensorEventListener {
                 @Override
                 public void run() {
                     //Log.v("tryRun", "Entered run");
-                    tryLongPress();
+                    if (!paused) {
+                        tryLongPress();
 
-                    if(collision()==NO_COLLISION) {
-                        //Log.v("bla","NO COL");
-                        fBV.mPosY += 4;
+                        if (collision() == NO_COLLISION) {
+                            //Log.v("bla","NO COL");
+                            fBV.mPosY += 4;
+                        } else if (collision() == STRIKER_COLLISION) {
+                            Log.v("bla", "STRIKER COL");
+
+                            mFrame.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    mFrame.removeView(fBV);
+                                    fBV = new FallingBlockView(getApplicationContext());
+                                    mFrame.addView(fBV);
+                                    points++;
+
+                                }
+                            });
+                        } else {
+                            mFrame.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    mFrame.removeView(fBV);
+                                    fBV = new FallingBlockView(getApplicationContext());
+                                    mFrame.addView(fBV);
+                                    lives--;
+                                }
+                            });
+
+                        }
+                        postInvalidate();
                     }
-                    else if(collision() == STRIKER_COLLISION) {
-                        Log.v("bla", "STRIKER COL");
-
-                        mFrame.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mFrame.removeView(fBV);
-                                fBV = new FallingBlockView(getApplicationContext());
-                                mFrame.addView(fBV);
-                                points++;
-
-                            }
-                        });
-                    }
-                    else {
-                        mFrame.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mFrame.removeView(fBV);
-                                fBV = new FallingBlockView(getApplicationContext());
-                                mFrame.addView(fBV);
-                                lives--;
-                            }
-                        });
-
-                    }
-                    postInvalidate();
                 }
 
             }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
@@ -294,6 +319,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         public void tryLongPress() {
             if(isStillDown) {
+                Log.v("Moved","I should move");
                 if (pressXPos < mDisplayWidth / 2) {
                     StrikerView meh = (StrikerView) mFrame.getChildAt(2);
                     meh.changeXYPos(-50);
@@ -313,6 +339,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         }
 
         public void changeXYPos(int bla) {
+            Log.v("Moved","I moved!");
             if (!borderHit(bla)) {
                 mPosX += bla;
             }
