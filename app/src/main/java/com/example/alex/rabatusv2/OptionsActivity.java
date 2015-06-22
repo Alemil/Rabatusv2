@@ -59,7 +59,7 @@ public class OptionsActivity extends MainActivity {
             }
         });
 
-        // Changes the background color to blue when the radiobutton is pressed.
+        // Changes the background color to blue when the radiobutton is pressed
         rb_blue.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
