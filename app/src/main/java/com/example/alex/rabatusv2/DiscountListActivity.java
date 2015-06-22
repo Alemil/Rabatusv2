@@ -43,7 +43,7 @@ public class DiscountListActivity extends ListActivity {
 
 
         // Get the saved DiscountItems
-        Gson gson = new Gson();
+         Gson gson = new Gson();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //Restore the saved data using the DISCOUNT_PREF_KEY.
