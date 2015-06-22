@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,8 +32,8 @@ public class HighscoreActivity extends Activity {
     int[] scoreList = new int[10];
     String[] nameList = new String[10];
 
-    private final String HIGHSCORE_NAMES_KEY = "highscore_names";
-    private final String HIGHSCORE_SCORES_KEY = "highscore_scores";
+    private final String HIGHSCORE_NAMES_KEY = "HighscoreNames";
+    private final String HIGHSCORE_SCORES_KEY = "HighscoreScores";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -41,23 +42,43 @@ public class HighscoreActivity extends Activity {
         setContentView(R.layout.highscore_activity);
         //temp
         Button temp = (Button) findViewById(R.id.temp_button);
+        Button tempReset = (Button) findViewById(R.id.temp_reset);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         String restoredNames = prefs.getString(HIGHSCORE_NAMES_KEY, null);
         String restoredScores = prefs.getString(HIGHSCORE_SCORES_KEY,null);
 
         if(restoredNames != null && restoredScores != null){
-                nameList = restoredNames.split(" ",10);
-                String[] scoreTempList = restoredScores.split(" ",10);
-                for(int i = 0 ; i <10 ; i++){
-                    scoreList[i] = Integer.parseInt(scoreTempList[i]);
+                nameList = restoredNames.split("!",10);
+                String[] scoreTempList = restoredScores.split("!",10);
+                for(int i = 0 ; i < scoreTempList.length ; i++){
+                    try {
+                        scoreList[i] = Integer.parseInt(scoreTempList[i]);
+                    }catch (NumberFormatException e){
+                        scoreList[i] = 0;
+                    }
                     updateListView(i,nameList[i],scoreList[i]);
                 }
         }
 
-        //setLists();
+        tempReset.setOnClickListener(new View.OnClickListener(){
 
+            @Override
+            public void onClick(View v) {
+
+                Log.v("highscore","Everything worked untill now1");
+                for(int i = 0; i < 10 ; i++){
+                    nameList[i] = " ";
+                    scoreList[i] = 0;
+
+
+                    updateListView(i,nameList[i],scoreList[i]);
+                    prefs.edit().putString(HIGHSCORE_SCORES_KEY, null);
+                    prefs.edit().putString(HIGHSCORE_NAMES_KEY,null);
+                }
+            }
+        });
         temp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,32 +88,7 @@ public class HighscoreActivity extends Activity {
             }
         });
     }
-/*
-    public void setLists(){
 
-        scoreList[0] = prefs.getInt("ONE",0);
-        scoreList[1] = prefs.getInt("TWO",0);
-        scoreList[2] = prefs.getInt("THREE",0);
-        scoreList[3] = prefs.getInt("FOUR",0);
-        scoreList[4] = prefs.getInt("FIVE",0);
-        scoreList[5] = prefs.getInt("SIX",0);
-        scoreList[6] = prefs.getInt("SEVEN",0);
-        scoreList[7] = prefs.getInt("EIGHT",0);
-        scoreList[8] = prefs.getInt("NINE",0);
-        scoreList[9] = prefs.getInt("TEN",0);
-
-        nameList[0] = prefs.getString("ONE", "AAAA");
-        nameList[1] = prefs.getString("TWO", "AAAA");
-        nameList[2] = prefs.getString("THREE", "AAAA");
-        nameList[3] = prefs.getString("FOUR", "AAAA");
-        nameList[4] = prefs.getString("FIVE", "AAAA");
-        nameList[5] = prefs.getString("SIX","AAAA");
-        nameList[6] = prefs.getString("SEVEN","AAAA");
-        nameList[7] = prefs.getString("EIGHT","AAAA");
-        nameList[8] = prefs.getString("NINE","AAAA");
-        nameList[9] = prefs.getString("TEN","AAAA");
-    }
-*/
     public void makePopup(final int score){
         AlertDialog.Builder alert = new AlertDialog.Builder(HighscoreActivity.this);
 
@@ -141,8 +137,8 @@ public class HighscoreActivity extends Activity {
                     j++;
                 }
             }
-            String scoreString="";
-            String nameString ="";
+            String scoreString=""+scoreList[0];
+            String nameString =nameList[0];
             int tempScore;
             String tempName;
             for(int i = lowestplace ; i < 10 ; i++){
@@ -157,15 +153,13 @@ public class HighscoreActivity extends Activity {
 
                 updateListView(i,nameList[i],scoreList[i]);
 
-                if(i == 0){
-                    scoreString += scoreList[i];
-                    nameString += nameList[i];
-                }else{
-                    scoreString += " " + scoreList[i];
-                    nameString += " " + nameList[i];
+                if(i > 0 ){
+                    scoreString += "!" + scoreList[i];
+                    nameString += "!" + nameList[i];
                 }
             }
 
+            Log.v("highscore","Everything worked untill now2");
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
             sharedPreferences.edit().putString(HIGHSCORE_NAMES_KEY, nameString).apply();
@@ -175,7 +169,6 @@ public class HighscoreActivity extends Activity {
     }
 
     public void updateListView(int i, String name, int score){
-        SharedPreferences.Editor editor;
 
         TextView nameView ;
         TextView scoreView;
@@ -187,12 +180,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("ONE",name);
-                editor.putInt("ONE",score);
-                editor.commit();
-                */
+
                 break;
 
             case 1:
@@ -202,12 +190,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("TWO", name);
-                editor.putInt("TWO", score);
-                editor.commit();
-*/
+
                 break;
 
             case 2:
@@ -217,13 +200,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("THREE", name);
-                editor.putInt("THREE", score);
-                editor.commit();
 
-*/
                 break;
 
             case 3:
@@ -233,12 +210,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("FOUR", name);
-                editor.putInt("FOUR", score);
-                editor.commit();
-   */
+
                 break;
 
             case 4:
@@ -248,12 +220,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("FIVE", name);
-                editor.putInt("FIVE", score);
-                editor.commit();
-*/
+
 
                 break;
 
@@ -264,12 +231,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("SIX", name);
-                editor.putInt("SIX", score);
-                editor.commit();
-*/
+
                 break;
 
             case 6:
@@ -279,12 +241,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("SEVEN", name);
-                editor.putInt("SEVEN", score);
-                editor.commit();
-*/
+
 
                 break;
 
@@ -295,12 +252,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("EIGHT", name);
-                editor.putInt("EIGHT", score);
-                editor.commit();
-*/
+
 
                 break;
 
@@ -311,13 +263,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("NINE", name);
-                editor.putInt("NINE", score);
-                editor.commit();
 
-*/
                 break;
 
             case 9:
@@ -327,12 +273,7 @@ public class HighscoreActivity extends Activity {
 
                 nameView.setText(name);
                 scoreView.setText("" + score);
-/*
-                editor = prefs.edit();
-                editor.putString("TEN",name);
-                editor.putInt("TEN",score);
-                editor.commit();
-*/
+
 
                 break;
 
