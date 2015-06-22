@@ -1,5 +1,6 @@
 package com.example.alex.rabatusv2;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -97,7 +100,13 @@ public class DiscountListActivity extends ListActivity {
 
                 mAdapter.deleteItems();
 
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                Toast toast = new Toast(getApplicationContext());
+
+                if(toast != null) {
+                    toast.cancel();
+                }
+                toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+
 
 
             }
@@ -107,6 +116,7 @@ public class DiscountListActivity extends ListActivity {
 
 
     }
+
 
     @Override
     protected void onPause() {
@@ -126,4 +136,6 @@ public class DiscountListActivity extends ListActivity {
 
 
     }
+
+
 }
