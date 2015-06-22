@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -73,7 +75,9 @@ public class GameActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
 
+        final SharedPreferences sp = getSharedPreferences("setting", MODE_PRIVATE);
         mFrame = (RelativeLayout) findViewById(R.id.frame);
+        mFrame.setBackgroundColor(sp.getInt("bgcolor", 0xFF00FF));
 
         textView = (TextView) mFrame.getChildAt(0);
 

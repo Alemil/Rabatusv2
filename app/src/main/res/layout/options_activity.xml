@@ -19,15 +19,15 @@
 
 
     <RadioGroup
+        android:id="@+id/radiogroup1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-             <RadioButton
-                android:id="@+id/white"
+            <RadioButton
+                android:id="@+id/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="White"
-                android:checked="true"
+                android:text="Black"
                 android:textSize="24sp" />
 
             <RadioButton
@@ -35,6 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Blue"
+                android:checked="true"
                 android:textSize="24sp" />
     
             <RadioButton

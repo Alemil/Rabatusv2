@@ -2,15 +2,17 @@ package com.example.alex.rabatusv2;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends Activity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class MainActivity extends Activity {
         final Button optionsButton = (Button) findViewById(R.id.options_button);
         final Button couponButton = (Button) findViewById(R.id.discount_button);
         final Button highscoreButton = (Button) findViewById(R.id.highscore_button);
+
 
         ImageView mImage = (ImageView) findViewById(R.id.logo_image);
         mImage.setImageResource(R.drawable.logo_image);
