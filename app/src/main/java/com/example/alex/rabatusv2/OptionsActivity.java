@@ -24,7 +24,7 @@ import android.widget.TextView;
  * Created by Mathias Linde on 18-06-2015.
  */
 
-public class OptionsActivity extends MainActivity {
+public class OptionsActivity extends Activity {
 
     // Sætter en BACKGROUNDCOLOR variabels default værdi til sort.
     private static int BACKGROUNDCOLOR = 0xff000000;
@@ -83,8 +83,8 @@ public class OptionsActivity extends MainActivity {
         rb_green.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                bg.setBackgroundColor(0xff20b2aa);
-                BACKGROUNDCOLOR = 0xff20b2aa;
+                bg.setBackgroundColor(0xff49b675);
+                BACKGROUNDCOLOR = 0xff49b675;
                 sp.edit().putInt("bgcolor", BACKGROUNDCOLOR).apply();
             }
         });
