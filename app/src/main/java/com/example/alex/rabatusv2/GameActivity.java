@@ -10,10 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -34,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Mathias Linde on 18-06-2015.
  */
-public class GameActivity extends Activity implements SensorEventListener {
+public class GameActivity extends Activity {
 
     private static final int REFRESH_RATE = 20;
     private static final int STRIKER_COLLISION = 1;
@@ -49,28 +45,22 @@ public class GameActivity extends Activity implements SensorEventListener {
 
     // Striker image's bitmap
     private Bitmap mBitmapStriker;
-
     private Bitmap mBitmapBlock;
 
     // Display dimensions
     private int mDisplayWidth, mDisplayHeight;
 
-    private static final int UPDATE_THRESHOLD = 500;
-    private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
-    private long mLastUpdate;
-    private GestureDetector mGestureDetector;
     private boolean gameStarted = false;
     private boolean isStillDown = false;
-    private boolean singlePress = false;
+    private boolean paused = false;
+
     private float pressXPos;
     private TextView textView;
-    private View goLeftView;
-    private View goRightView;
     private StrikerView strikerView;
+
     private int points = 0;
     private int lives = 3;
-    private boolean paused;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +75,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         mBitmapStriker = BitmapFactory.decodeResource(getResources(), R.drawable.omnom_striker);
         mBitmapBlock = BitmapFactory.decodeResource(getResources(), R.drawable.logo_image);
-
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        if (null == (mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER))) finish();
 
         mDetector = new GestureDetectorCompat(this, new MyGestureListener());
 
@@ -135,17 +121,11 @@ public class GameActivity extends Activity implements SensorEventListener {
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer,
-                SensorManager.SENSOR_DELAY_UI);
-
-        mLastUpdate = System.currentTimeMillis();
-
         if(paused) getPausedDialog();
     }
 
     @Override
     protected void onPause() {
-        mSensorManager.unregisterListener(this);
         paused = true;
         super.onPause();
     }
@@ -154,8 +134,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-
-            // Get the size of the display so this View knows where borders are
+            // Get the size of the display so this layout knows where borders are
             mDisplayWidth = mFrame.getWidth();
             mDisplayHeight = mFrame.getHeight();
 
@@ -197,16 +176,6 @@ public class GameActivity extends Activity implements SensorEventListener {
             default :
                 return super.onTouchEvent(event);
         }
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     public class StrikerView extends View {
@@ -312,25 +281,17 @@ public class GameActivity extends Activity implements SensorEventListener {
             if(isStillDown) {
                 Log.v("Moved","I should move");
                 if (pressXPos < mDisplayWidth / 2) {
-                    StrikerView meh = (StrikerView) mFrame.getChildAt(2);
-                    meh.changeXYPos(-30);
+                    strikerView.changeXPos(-30);
                 } else {
-                    StrikerView meh = (StrikerView) mFrame.getChildAt(2);
-                    meh.changeXYPos(30);
+                    strikerView.changeXPos(30);
                 }
             }
-
-            if(singlePress) {
-                isStillDown = false;
-                singlePress = false;
-            }
-
         }
 
-        public void changeXYPos(int bla) {
+        public void changeXPos(int n) {
             Log.v("Moved","I moved!");
-            if (!borderHit(bla)) {
-                mPosX += bla;
+            if (!borderHit(n)) {
+                mPosX += n;
             }
         }
 
@@ -347,9 +308,7 @@ public class GameActivity extends Activity implements SensorEventListener {
         }
 
         private int collision() {
-            //Log.v("bla","Entered collison");
             if(rightCorner() || leftCorner()) {
-               // Log.v("bla","RETURN STRIKER COL");
                 return STRIKER_COLLISION;
             }
             if(fBV.mPosY >= mDisplayHeight-5) {
@@ -436,7 +395,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
             if (!gameStarted) {
                 gameStarted = true;
-                StrikerView strikerView = new StrikerView(getApplicationContext());
+                strikerView = new StrikerView(getApplicationContext());
                 updateText();
                 mFrame.addView(strikerView);
                 mFrame.addView(strikerView.fBV);
