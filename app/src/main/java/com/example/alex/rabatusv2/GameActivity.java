@@ -36,7 +36,7 @@ public class GameActivity extends Activity {
     private static final int STRIKER_COLLISION = 1;
     private static final int BOTTOM_COLLISION = 2;
     private static final int NO_COLLISION = 0;
-    private static final String DEBUG_TAG = "yolo";
+    private static final String DEBUG_TAG = "touch";
 
     private GestureDetectorCompat mDetector;
 
@@ -51,10 +51,16 @@ public class GameActivity extends Activity {
     private int mDisplayWidth, mDisplayHeight;
 
     private boolean gameStarted = false;
+
+    // If true, the striker will move once every iteration of the scheduled thread
     private boolean isStillDown = false;
+
+    // If true, the scheduled thread will do nothing
     private boolean paused = false;
 
+    // Used for the onTouchEvent method to save the x-coodinate of the event
     private float pressXPos;
+
     private TextView textView;
     private StrikerView strikerView;
 
@@ -62,6 +68,8 @@ public class GameActivity extends Activity {
     private int lives = 3;
 
 
+    // Initializes the layout, the bitmaps, gesture detector, listener for the pause button
+    // and set the correct background color
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,11 +96,14 @@ public class GameActivity extends Activity {
         });
     }
 
+    // Overridden so the game wont exit from a backpress
     @Override
     public void onBackPressed() {
 
     }
 
+    // Opens the paused dialog and sets the necessary fields suach as paused. Can close/resume the
+    // aplication
     public void getPausedDialog() {
         paused = true;
         AlertDialog.Builder menu = new AlertDialog.Builder(GameActivity.this);
@@ -118,33 +129,37 @@ public class GameActivity extends Activity {
         menu.show();
     }
 
+    // Opens the paused dialog when the aplication's onPaused method has been called
     @Override
     protected void onResume() {
         super.onResume();
         if(paused) getPausedDialog();
     }
 
+    // Set paused = true so when you press fx home button the game pauses
     @Override
     protected void onPause() {
         paused = true;
         super.onPause();
     }
 
+    // Gets the size of the display so this layout knows where borders are
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            // Get the size of the display so this layout knows where borders are
             mDisplayWidth = mFrame.getWidth();
             mDisplayHeight = mFrame.getHeight();
-
         }
     }
 
+    // Updates the textView
     private void updateText() {
         textView.setText("Score: " + points + "  Lives " + lives);
     }
 
+    // Saves the x position of the press and keeps track of when a finger is/remains on the screen
+    // The rest is standard onTouchEvent
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
@@ -178,20 +193,21 @@ public class GameActivity extends Activity {
         }
     }
 
+    // Class for the striker
     public class StrikerView extends View {
 
         private final Paint mPainter = new Paint();
 
+        // Coordinates of the top left corner
         private float mPosX, mPosY;
+
         private Bitmap mScaledBitmap;
         private int mScaledBitmapWidth, mScaledBitmapHeight;
-        private ScheduledFuture<?> mMoverFuture;
+
         private FallingBlockView fBV;
 
         public StrikerView(Context context) {
             super(context);
-
-            //Need a different size for different screen sizes, test until at good ratio is found
 
             mScaledBitmapWidth = mDisplayWidth / 10;
             mScaledBitmapHeight = mDisplayHeight / 10;
@@ -221,35 +237,32 @@ public class GameActivity extends Activity {
             ScheduledExecutorService executor = Executors
                     .newScheduledThreadPool(1);
 
-            // Execute the run() in Worker Thread every REFRESH_RATE
-            // milliseconds
-            // Save reference to this job in mMoverFuture
+            // Execute the run() in Worker Thread every REFRESH_RATE milliseconds
+            // All logic takes place here, and this determines how often the blocks move
+            // All drawing is called from here as well
             executor.scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
-                    //Log.v("tryRun", "Entered run");
+
+                    //If paused, do nothing
                     if (!paused) {
                         tryLongPress();
 
                         if (collision() == NO_COLLISION) {
-                            //Log.v("bla","NO COL");
                             fBV.mPosY += 8;
                         } else if (collision() == STRIKER_COLLISION) {
-                            Log.v("bla", "STRIKER COL");
 
                             mFrame.post(new Runnable() {
                                 @Override
                                 public void run() {
-
-                                    mFrame.removeView(fBV);
-                                    fBV = new FallingBlockView(getApplicationContext());
-                                    mFrame.addView(fBV);
+                                    generateNewBlock();
                                     points++;
                                     updateText();
-                                    if(points == 10) {
+                                    if (points == 10) {
                                         finishedGame();
                                     }
                                 }
+
                             });
 
                         } else {
@@ -257,12 +270,10 @@ public class GameActivity extends Activity {
                                 @Override
                                 public void run() {
 
-                                    mFrame.removeView(fBV);
-                                    fBV = new FallingBlockView(getApplicationContext());
-                                    mFrame.addView(fBV);
+                                    generateNewBlock();
                                     lives--;
                                     updateText();
-                                    if(lives < 1) {
+                                    if (lives < 1) {
                                         finish();
                                     }
                                 }
@@ -277,9 +288,16 @@ public class GameActivity extends Activity {
             }, 0, REFRESH_RATE, TimeUnit.MILLISECONDS);
         }
 
+        // Deletes current falling block and creates a new one
+        public void generateNewBlock() {
+            mFrame.removeView(fBV);
+            fBV = new FallingBlockView(getApplicationContext());
+            mFrame.addView(fBV);
+        }
+
+        // Checks if the finger is on the screen - if true, moves the striker position
         public void tryLongPress() {
             if(isStillDown) {
-                Log.v("Moved","I should move");
                 if (pressXPos < mDisplayWidth / 2) {
                     strikerView.changeXPos(-30);
                 } else {
@@ -288,13 +306,15 @@ public class GameActivity extends Activity {
             }
         }
 
+        // Changes striker position if the borders are not hit
         public void changeXPos(int n) {
-            Log.v("Moved","I moved!");
             if (!borderHit(n)) {
                 mPosX += n;
             }
         }
 
+        // Checks if the borders would be hit by a move - if so, aligns the striker to the border
+        // Returns true if border is hit
         public boolean borderHit(int bla) {
             if (mPosX + mScaledBitmapWidth + bla >= mDisplayWidth) {
                 mPosX = mDisplayWidth - mScaledBitmapWidth;
@@ -307,6 +327,7 @@ public class GameActivity extends Activity {
             return false;
         }
 
+        // Checks for collision between a falling block and the striker/bottom of the screen
         private int collision() {
             if(rightCorner() || leftCorner()) {
                 return STRIKER_COLLISION;
@@ -317,6 +338,7 @@ public class GameActivity extends Activity {
             return NO_COLLISION;
         }
 
+        // Two helper funktions that checks the corners of the blick to the strikers position
         public boolean leftCorner() {
             return (fBV.mPosX > mPosX
                     && fBV.mPosX < mPosX + mScaledBitmapWidth
@@ -333,10 +355,11 @@ public class GameActivity extends Activity {
 
     public class FallingBlockView extends View {
 
-        private ScheduledFuture<?> mMoverFuture;
         private final Paint mPainter = new Paint();
 
+        // Position of the top left corner
         private float mPosX, mPosY;
+
         private Bitmap mScaledBitmap;
         private int mScaledBitmapWidth;
 
@@ -353,30 +376,6 @@ public class GameActivity extends Activity {
 
         }
 
-        private void stop() {
-            //Log.v("bla","Entered stop");
-
-            if (null != mMoverFuture && !mMoverFuture.isDone()) {
-                mMoverFuture.cancel(true);
-            }
-
-            // This work will be performed on the UI Thread
-            mFrame.post(new Runnable() {
-                @Override
-                public void run() {
-
-                    createNewBlock();
-                    mFrame.removeView(FallingBlockView.this);
-
-                }
-            });
-        }
-
-        private void createNewBlock() {
-            FallingBlockView fallingBlockView = new FallingBlockView(getApplicationContext());
-            mFrame.addView(fallingBlockView);
-        }
-
         public void onDraw(Canvas canvas) {
             canvas.save();
 
@@ -387,9 +386,10 @@ public class GameActivity extends Activity {
 
     }
 
+    // Class for custom gesture detections
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final String DEBUG_TAG = "Gestures";
 
+        // Starts the game if not already started by spawning a striker and starting it's start method
         @Override
         public boolean onSingleTapConfirmed(MotionEvent event) {
 
@@ -406,6 +406,8 @@ public class GameActivity extends Activity {
 
     }
 
+    // When the game is finished, if the user got a coupon, call this method.
+    // Creates a dialog alert which when pressed opens the Coupon window
     private void finishedGame() {
         paused = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
