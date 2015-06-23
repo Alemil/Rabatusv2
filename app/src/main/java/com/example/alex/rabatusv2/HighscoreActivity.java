@@ -32,9 +32,10 @@ import java.util.Set;
  * Created by Mathias Linde on 18-06-2015.
  */
 public class HighscoreActivity extends Activity {
-    //temp
+    // Temp
     final Random r = new Random();
     private String newName;
+
     ArrayList<Integer> scoreList = new ArrayList<>();
     ArrayList<String> nameList = new ArrayList<>();
 
@@ -46,15 +47,18 @@ public class HighscoreActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.highscore_activity);
+
         //temp
         Button temp = (Button) findViewById(R.id.temp_button);
         Button tempReset = (Button) findViewById(R.id.temp_reset);
 
+        //Loading the strings
         Gson gson = new Gson();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String restoredNames = sharedPreferences.getString(HIGHSCORE_NAMES_KEY,null);
         String restoredScores = sharedPreferences.getString(HIGHSCORE_SCORES_KEY,null);
 
+        // Reading the strings as Lists.
         if(restoredNames != null && restoredScores != null){
             Type intType = new TypeToken<List<Integer>>(){
             }.getType();
@@ -71,26 +75,14 @@ public class HighscoreActivity extends Activity {
                 scoreList.add(0);
             }
         }
+
+        //Updating the views with the saved lists
             Log.v("highscore","" +nameList.size());
         for(int i = 0 ; i<10;i++){
             updateListView(i,nameList.get(i),scoreList.get(i));
         }
 
-        /*
-        if(restoredNames != null && restoredScores != null){
-                Log.v("highscore","" + nameList.length);
-                nameList = restoredNames.split("!",10);
-                String[] scoreTempList = restoredScores.split("!",10);
-                for(int i = 0 ; i < scoreTempList.length ; i++){
-                    try {
-                        scoreList[i] = Integer.parseInt(scoreTempList[i]);
-                    }catch (NumberFormatException e){
-                        scoreList[i] = 0;
-                    }
-                    updateListView(i,nameList[i],scoreList[i]);
-                }
-        }
-        */
+        // Temp buttons' onClickListeners.
         tempReset.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -104,8 +96,6 @@ public class HighscoreActivity extends Activity {
 
                     updateListView(i, nameList.get(i), scoreList.get(i));
 
-                    //prefs.edit().putString(HIGHSCORE_SCORES_KEY, null);
-                    //prefs.edit().putString(HIGHSCORE_NAMES_KEY,null);
                 }
             }
         });
@@ -123,6 +113,8 @@ public class HighscoreActivity extends Activity {
     protected void onPause(){
         super.onPause();
 
+        //Saving the lists as strings and Json code.
+
         Gson gson = new Gson();
 
         String savedNames = gson.toJson(nameList);
@@ -136,8 +128,10 @@ public class HighscoreActivity extends Activity {
     }
 
     public void makePopup(final int score){
+        // building the AlertDialog.
         AlertDialog.Builder alert = new AlertDialog.Builder(HighscoreActivity.this);
 
+        //Adding EditText field to the dialogbox.
         final EditText editText = new EditText(getApplicationContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         editText.setLayoutParams(lp);
@@ -149,7 +143,7 @@ public class HighscoreActivity extends Activity {
         alert.setView(editText);
         alert.setCancelable(false);
 
-
+        //Setting up the button for the dialog box
         alert.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -170,7 +164,7 @@ public class HighscoreActivity extends Activity {
     }
 
     public void updateList(String name, int score){
-
+        //Updating the list.
         if(score >= scoreList.get(9) ){
             int lowestplace = 9;
 
@@ -183,10 +177,10 @@ public class HighscoreActivity extends Activity {
                     j++;
                 }
             }
-            //String scoreString="!"+scoreList[0];
-            //String nameString ="!"+nameList[0];
             int tempScore;
             String tempName;
+
+            //Making the scores change places.
             for(int i = lowestplace ; i < 10 ; i++){
                 tempScore = scoreList.get(i);
                 tempName = nameList.get(i);
@@ -198,22 +192,13 @@ public class HighscoreActivity extends Activity {
                 name=tempName;
 
                 updateListView(i,nameList.get(i),scoreList.get(i));
-/*
-                if(i > 0 ){
-                    scoreString += "!" + scoreList[i];
-                    nameString += "!" + nameList[i];
-                }*/
+
             }
-
-            //Log.v("highscore","Everything worked untill now2");
-            //SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-            //sharedPreferences.edit().putString(HIGHSCORE_NAMES_KEY, nameString).apply();
-            //sharedPreferences.edit().putString(HIGHSCORE_SCORES_KEY, scoreString).apply();
 
         }
     }
 
+    //Updating the view.
     public void updateListView(int i, String name, int score){
 
         TextView nameView ;
