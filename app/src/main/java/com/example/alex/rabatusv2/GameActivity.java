@@ -36,21 +36,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class GameActivity extends Activity implements SensorEventListener {
 
-    /*<View
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignEnd="@+id/startText"
-            android:id="@+id/goLeftView"/>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/startText"
-            android:id="@+id/goRightView"/>
-            */
-
-    private static final int REFRESH_RATE = 40;
+    private static final int REFRESH_RATE = 20;
     private static final int STRIKER_COLLISION = 1;
     private static final int BOTTOM_COLLISION = 2;
     private static final int NO_COLLISION = 0;
@@ -97,52 +83,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         textView = (TextView) mFrame.getChildAt(0);
 
-        /*
-        goLeftView = (View) findViewById(R.id.goLeftView);
-
-        goRightView = (View) findViewById(R.id.goRightView);
-
-        goLeftView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("bl", "sfd");
-                if (!gameStarted) {
-                    gameStarted = true;
-                    strikerView = new StrikerView(getApplicationContext());
-                    textView.setText("Score: " + points + "  Lives " + lives + "                      ||");
-                    mFrame.addView(strikerView);
-                    mFrame.addView(strikerView.fBV);
-                    strikerView.start();
-                }
-                else if (gameStarted) {
-                    isStillDown = true;
-                    singlePress = true;
-                    strikerView.changeXYPos(-60);;
-                }
-            }
-        });
-
-        goRightView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                Log.v("bl","blabla");
-                if (!gameStarted) {
-                    gameStarted = true;
-                    strikerView = new StrikerView(getApplicationContext());
-                    textView.setText("Score: " + points + "  Lives " + lives + "                      ||");
-                    mFrame.addView(strikerView);
-                    mFrame.addView(strikerView.fBV);
-                    strikerView.start();
-                }
-
-                 else if(gameStarted) {
-                    isStillDown = true;
-                    singlePress = true;
-                    strikerView.changeXYPos(60);
-                }
-            }
-        });*/
-
         mBitmapStriker = BitmapFactory.decodeResource(getResources(), R.drawable.omnom_striker);
         mBitmapBlock = BitmapFactory.decodeResource(getResources(), R.drawable.logo_image);
 
@@ -157,30 +97,39 @@ public class GameActivity extends Activity implements SensorEventListener {
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                paused = true;
-                AlertDialog.Builder menu = new AlertDialog.Builder(GameActivity.this);
-                menu.setTitle("Paused Menu");
-                menu.setCancelable(false);
-
-                menu.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        paused = false;
-
-                        dialog.dismiss();
-                    }
-                });
-
-                menu.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-                menu.show();
+                getPausedDialog();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    public void getPausedDialog() {
+        paused = true;
+        AlertDialog.Builder menu = new AlertDialog.Builder(GameActivity.this);
+        menu.setTitle("Paused Menu");
+        menu.setCancelable(false);
+
+        menu.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                paused = false;
+
+                dialog.dismiss();
+            }
+        });
+
+        menu.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        menu.show();
     }
 
     @Override
@@ -190,11 +139,14 @@ public class GameActivity extends Activity implements SensorEventListener {
                 SensorManager.SENSOR_DELAY_UI);
 
         mLastUpdate = System.currentTimeMillis();
+
+        if(paused) getPausedDialog();
     }
 
     @Override
     protected void onPause() {
         mSensorManager.unregisterListener(this);
+        paused = true;
         super.onPause();
     }
 
@@ -309,40 +261,47 @@ public class GameActivity extends Activity implements SensorEventListener {
                     //Log.v("tryRun", "Entered run");
                     if (!paused) {
                         tryLongPress();
+
+                        if (collision() == NO_COLLISION) {
+                            //Log.v("bla","NO COL");
+                            fBV.mPosY += 8;
+                        } else if (collision() == STRIKER_COLLISION) {
+                            Log.v("bla", "STRIKER COL");
+
+                            mFrame.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    mFrame.removeView(fBV);
+                                    fBV = new FallingBlockView(getApplicationContext());
+                                    mFrame.addView(fBV);
+                                    points++;
+                                    updateText();
+                                    if(points == 10) {
+                                        finishedGame();
+                                    }
+                                }
+                            });
+
+                        } else {
+                            mFrame.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    mFrame.removeView(fBV);
+                                    fBV = new FallingBlockView(getApplicationContext());
+                                    mFrame.addView(fBV);
+                                    lives--;
+                                    updateText();
+                                    if(lives < 1) {
+                                        finish();
+                                    }
+                                }
+                            });
+
+                        }
+                        postInvalidate();
                     }
-                    if (collision() == NO_COLLISION) {
-                        //Log.v("bla","NO COL");
-                        fBV.mPosY += 4;
-                    } else if (collision() == STRIKER_COLLISION) {
-                        Log.v("bla", "STRIKER COL");
-
-                        mFrame.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mFrame.removeView(fBV);
-                                fBV = new FallingBlockView(getApplicationContext());
-                                mFrame.addView(fBV);
-                                points++;
-                                updateText();
-                            }
-                        });
-
-                    } else {
-                        mFrame.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                mFrame.removeView(fBV);
-                                fBV = new FallingBlockView(getApplicationContext());
-                                mFrame.addView(fBV);
-                                lives--;
-                                updateText();
-                            }
-                        });
-
-                    }
-                    postInvalidate();
 
                 }
 
@@ -354,10 +313,10 @@ public class GameActivity extends Activity implements SensorEventListener {
                 Log.v("Moved","I should move");
                 if (pressXPos < mDisplayWidth / 2) {
                     StrikerView meh = (StrikerView) mFrame.getChildAt(2);
-                    meh.changeXYPos(-50);
+                    meh.changeXYPos(-30);
                 } else {
                     StrikerView meh = (StrikerView) mFrame.getChildAt(2);
-                    meh.changeXYPos(50);
+                    meh.changeXYPos(30);
                 }
             }
 
@@ -478,7 +437,7 @@ public class GameActivity extends Activity implements SensorEventListener {
             if (!gameStarted) {
                 gameStarted = true;
                 StrikerView strikerView = new StrikerView(getApplicationContext());
-                textView.setText("Score: " + points + "  Lives " + lives + "                      ||");
+                updateText();
                 mFrame.addView(strikerView);
                 mFrame.addView(strikerView.fBV);
                 strikerView.start();
@@ -489,6 +448,7 @@ public class GameActivity extends Activity implements SensorEventListener {
     }
 
     private void finishedGame() {
+        paused = true;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Congratulations! You've been awarded with a discount code! \n Please press continue to acquire it");
         builder.setCancelable(false);
