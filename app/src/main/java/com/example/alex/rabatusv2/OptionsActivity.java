@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 public class OptionsActivity extends MainActivity {
 
+    // Sætter en BACKGROUNDCOLOR variabels default værdi til sort.
     private static int BACKGROUNDCOLOR = 0xff000000;
 
     @Override
@@ -34,27 +35,36 @@ public class OptionsActivity extends MainActivity {
         setContentView(R.layout.options_activity);
 
         RadioGroup rg = (RadioGroup) findViewById(R.id.radiogroup1);
+
         final SharedPreferences sp = getSharedPreferences("setting", MODE_PRIVATE);
 
-        if(sp.getInt("checked", 0) != 0)
+        /*
+            Den følgende kodestump gør at den valgte RadioButton forbliver trykket.
+            Så når spilleren går væk fra Optionsmenuen, og derefter tilbage, vil
+            den samme RadioButton stadig være afkrydset.
+         */
+        if(sp.getInt("check", 0) != 0)
         {
-            rg.check(sp.getInt("checked",0));
+            rg.check(sp.getInt("check",0));
         }
 
-        //final RelativeLayout bg = (RelativeLayout) findViewById(R.id.VIEW_PARENT);
+        /*
+            Herunder opsætter vi de forskellige RadioButtons og RadioGroup til
+            de tilhørende xml id's.
+         */
         final LinearLayout bg = (LinearLayout) findViewById(R.id.linearlayout);
         bg.setBackgroundColor(BACKGROUNDCOLOR);
-        final RadioButton rb_black = (RadioButton) findViewById(R.id.black);
+        final RadioButton rb_copperred = (RadioButton) findViewById(R.id.copperred);
         final RadioButton rb_blue = (RadioButton) findViewById(R.id.blue);
         final RadioButton rb_green = (RadioButton) findViewById(R.id.green);
 
-        // Changes the background color to black when the radiobutton is pressed.
+        // Changes the background color to copper-red when the radiobutton is pressed.
         // This one is by default pressed.
-        rb_black.setOnClickListener(new OnClickListener() {
+        rb_copperred.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                bg.setBackgroundColor(0xff000000);
-                BACKGROUNDCOLOR = 0xff000000;
+                bg.setBackgroundColor(0xffcb6d51);
+                BACKGROUNDCOLOR = 0xffcb6d51;
                 sp.edit().putInt("bgcolor", BACKGROUNDCOLOR).apply();
             }
         });
@@ -81,6 +91,13 @@ public class OptionsActivity extends MainActivity {
 
     }
 
+    /*
+       SharedPreference sikrer at værdierne forbliver de samme og kontrollerer dem
+       inden opbevaringen. Det vil sige, mere praktisk talt, at når spilleren har valgt
+       en baggrundsfarve, forbliver det denne farve når spilleren forlader Optionsmenuen
+       og går ind i selve spillet.
+     */
+
     protected void onPause()
     {
         super.onPause();
@@ -89,7 +106,7 @@ public class OptionsActivity extends MainActivity {
         int id = rg.getCheckedRadioButtonId();
         SharedPreferences sp = getSharedPreferences("setting", MODE_PRIVATE);
         SharedPreferences.Editor e = sp.edit();
-        e.putInt("checked", id);
+        e.putInt("check", id);
         e.commit();
     }
 
