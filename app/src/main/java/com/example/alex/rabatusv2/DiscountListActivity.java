@@ -45,8 +45,6 @@ public class DiscountListActivity extends ListActivity {
         setContentView(R.layout.discount_list);
         mAdapter = new DiscountAdapter(getApplicationContext());
 
-        //Set background color
-
         // Get the saved DiscountItems
         Gson gson = new Gson();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

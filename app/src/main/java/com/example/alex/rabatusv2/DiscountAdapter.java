@@ -36,12 +36,6 @@ public class DiscountAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
-    // Not used yet
-    public void clearItems() {
-        discountItems.clear();
-        notifyDataSetChanged();
-    }
-
     public void addAll(List<DiscountItem> items) {
         discountItems.addAll(items);
     }
@@ -108,8 +102,6 @@ public class DiscountAdapter extends BaseAdapter{
                 discountItem.setItemChecked(isChecked);
             }
         });
-
-
 
         return discountItemView;
     }
